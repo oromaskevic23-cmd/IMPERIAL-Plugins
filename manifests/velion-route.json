@@ -1,0 +1,6 @@
+{
+  "id": "imperial.velion-route",
+  "version": "0.2.0",
+  "capabilities": ["route:internal"],
+  "description": "Deterministic VELION model route plan with MAX as a mode; no LLM invocation."
+}

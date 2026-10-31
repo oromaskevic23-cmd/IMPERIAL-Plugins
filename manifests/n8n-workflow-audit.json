@@ -1,0 +1,6 @@
+{
+  "id": "imperial.n8n-workflow-audit",
+  "version": "0.2.0",
+  "capabilities": ["read:public"],
+  "description": "Static workflow risk hints. Always requires manual review for execution."
+}

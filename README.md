@@ -43,3 +43,7 @@ The public repository excludes credentials, payout controls, proprietary private
 ## Security and license
 
 See [SECURITY.md](SECURITY.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) and [LICENSE.md](LICENSE.md). This code is source-visible but **not** offered under an OSI open-source license. External components retain their own rights; no n8n source code or marks are licensed by IMPERIAL Core.
+
+## Additional prototype plugins
+
+Five declarative plugin manifest examples and deterministic offline adapters are documented in [the plugin catalog](docs/PLUGIN_CATALOG.md): NCA training assessment, n8n workflow auditing and VELION routing plans join Guardian and Audit Ledger. None enables unattended or commercial execution.

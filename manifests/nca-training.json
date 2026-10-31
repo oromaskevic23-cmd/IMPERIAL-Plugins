@@ -1,0 +1,6 @@
+{
+  "id": "imperial.nca-training",
+  "version": "0.2.0",
+  "capabilities": ["simulate:task"],
+  "description": "Offline precommitted-answer assessment interface; not an independent examiner."
+}
