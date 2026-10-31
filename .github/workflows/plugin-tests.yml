@@ -1,0 +1,16 @@
+name: Plugin Prototype Tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Guardian unit tests
+        run: python -m unittest discover -s plugins/guardian-policy -p 'test_*.py' -v
