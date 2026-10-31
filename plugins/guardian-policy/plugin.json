@@ -1,0 +1,7 @@
+{
+  "id": "imperial.guardian-policy",
+  "version": "0.1.0",
+  "entrypoint": "main.py",
+  "permissions": [],
+  "description": "Deny-by-default policy evaluation"
+}
