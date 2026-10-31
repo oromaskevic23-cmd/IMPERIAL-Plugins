@@ -47,3 +47,10 @@ See [SECURITY.md](SECURITY.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [d
 ## Additional prototype plugins
 
 Five declarative plugin manifest examples and deterministic offline adapters are documented in [the plugin catalog](docs/PLUGIN_CATALOG.md): NCA training assessment, n8n workflow auditing and VELION routing plans join Guardian and Audit Ledger. None enables unattended or commercial execution.
+
+
+---
+
+### Canonical founder and public project identity
+
+This public repository is listed in the [founder-maintained IMPERIAL Core engineering portfolio](https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/projects/). The public [engineering source registry](https://oromaskevic23-cmd.github.io/Capital-Core-Public/reference/projects/) links this source to the account's published project records under **Alexander Nikolaevich Romaskevich (RomaskevicH)**, Founder, Owner and CEO of IMPERIAL Core and its final architectural decision authority. Repository-specific governance, contributor rights, third-party intellectual property, and documented independence of individual projects remain unchanged. Publication does not prove production execution, market adoption or Google indexing.
