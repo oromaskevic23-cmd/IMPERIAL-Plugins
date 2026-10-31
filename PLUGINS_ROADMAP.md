@@ -1,18 +1,10 @@
-# IMPERIAL Plugins — Engineering Roadmap
+# IMPERIAL Plugins — Implementation Gates
 
-Status: prototype source only; no deployed plugin runtime or security certification claimed.
+Snapshot 2026-10-31. `src/imperial_plugins` is an executable **local security reference**, not a deployed plugin runtime.
 
-## Initial modules
-- Guardian Policy: deny-by-default allowlist and approval check.
-- Audit Ledger: deterministic SHA-256 hash-chain event helper (in-memory only).
-- AI Passport: structural validation only; cryptographic verification is pending.
+- **P0 implemented in source:** manifest allowlist, HMAC-authenticated bounded AI Passport, deny-by-default Guardian, scoped owner approval, Owner Kill Switch, durable local SQLite hash chain, unit tests, CI configuration.
+- **P0 not yet verified in production:** secured key management, signed manifests with Ed25519, live authorized orchestrator transport, durable distributed replay protection, sandbox, remote independent QA.
+- **P1 planned:** Enterprise Skills registry, approval UI, multi-tenant plugin isolation, release attestation, telemetry/redaction, workflow connector for n8n.
+- **P2 planned:** CONSTRUCTOR AI, VELION, ORION, CRM-SOFFT and NCA simulation/training adapters.
 
-## Next implementation gates
-1. Signed plugin manifests and Ed25519 verification.
-2. Scoped capabilities, explicit Approval Gateway and Owner Kill Switch.
-3. Federated orchestrator routing via HANTER; no global orchestrator.
-4. Durable append-only Audit Ledger, replay protection and audit export.
-5. Sandbox isolation, independent QA, CI and release provenance.
-6. Connector plugins for CONSTRUCTOR AI, VELION, NCA training and CRM-SOFFT.
-
-Public/Private Boundary and CRYPTO IMPERIAL Ecosystem Boundary are mandatory. No production credentials or private code in this repository.
+**Release policy:** source checks are not proof of a live production service. No external payments, platform logins, wallet operations or commercial tasks without specific owner approval and evidence.

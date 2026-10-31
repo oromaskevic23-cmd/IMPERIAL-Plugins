@@ -1,0 +1,6 @@
+{
+  "id": "imperial.audit-ledger",
+  "version": "0.2.0",
+  "capabilities": ["read:public"],
+  "description": "Example read-only Audit Ledger interface; not a log export service."
+}

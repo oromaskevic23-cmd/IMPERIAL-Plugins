@@ -1,0 +1,6 @@
+{
+  "id": "imperial.guardian-policy",
+  "version": "0.2.0",
+  "capabilities": ["read:public", "simulate:task"],
+  "description": "Example restricted Guardian policy interface; no executable code loaded."
+}
