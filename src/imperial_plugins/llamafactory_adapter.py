@@ -30,8 +30,8 @@ SOURCE = re.compile(r"^synthetic:[a-z0-9][a-z0-9_.-]{2,90}$")
 # Deliberately conservative best-effort filter, not a comprehensive DLP tool.
 SECRET = re.compile(
     r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|"
-    r"\b(?:sk-proj-|sk-[A-Za-z0-9]{30,}|ghp_[A-Za-z0-9]{30,}|"
-    r"AKIA[0-9A-Z]{16})|\b[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
+    r"(?:sk-proj-|sk-[A-Za-z0-9]{30,}|ghp_[A-Za-z0-9]{30,}|"
+    r"AKIA[0-9A-Z]{16})|[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
     re.IGNORECASE,
 )
 
