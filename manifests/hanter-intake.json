@@ -1,0 +1,8 @@
+{
+  "id": "imperial.hanter-intake",
+  "version": "0.3.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Durable local HANTER proposal intake with federated tenant and skill checks; never executes agents."
+}
