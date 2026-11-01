@@ -1,0 +1,8 @@
+{
+  "id": "imperial.enterprise-skills",
+  "version": "0.3.0",
+  "capabilities": [
+    "route:internal"
+  ],
+  "description": "Strict tenant-scoped Enterprise Skills descriptors and offline planning; no execution authority."
+}

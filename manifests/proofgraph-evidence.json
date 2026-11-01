@@ -1,0 +1,8 @@
+{
+  "id": "imperial.proofgraph-evidence",
+  "version": "0.3.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Hash-bound local evidence lineage. Never equates integrity with independent QA or production permission."
+}
