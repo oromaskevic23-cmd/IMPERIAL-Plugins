@@ -18,7 +18,7 @@ def policy(**changes):
     return {
         "tenant_id": "imperial-internal", "orchestrator_id": "engineering-orch",
         "base_model_id": REFERENCE_MODEL,
-        "base_model_revision": "1" * 40,
+        "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
         "training_method": "QLORA",
         "manual_model_license_review_sha256": "a" * 64,
         "privacy_review_claimed": True, "gpu_budget_usd": 0,
@@ -39,7 +39,7 @@ class TestVELIONLlamaFactoryAdapter(unittest.TestCase):
         self.assertEqual(p["validation_examples"], 2)
         self.assertEqual(p["independent_test_examples"], 0)
         self.assertIn("quantization_bit: 4", p["files"]["train.yaml"])
-        self.assertIn("model_revision: " + "1" * 40, p["files"]["train.yaml"])
+        self.assertIn("model_revision: " + "cdbee75f17c01a7cc42f958dc650907174af0554", p["files"]["train.yaml"])
         self.assertIn("eval_dataset: imperial_eval", p["files"]["train.yaml"])
         self.assertIn("trust_remote_code: false", p["files"]["train.yaml"])
         self.assertIn("report_to: none", p["files"]["train.yaml"])
@@ -124,6 +124,7 @@ class TestVELIONLlamaFactoryAdapter(unittest.TestCase):
             {"base_model_id": "unreviewed/remote-model"},
             {"base_model_revision": "main"},
             {"base_model_revision": "0"*40},
+            {"base_model_revision": "1"*40},
             {"manual_model_license_review_sha256": ""},
             {"training_method": "FULL"},
             {"gpu_budget_usd": 1},

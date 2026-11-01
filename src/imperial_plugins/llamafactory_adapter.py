@@ -14,6 +14,7 @@ UPSTREAM_REPO = "https://github.com/hiyouga/LlamaFactory"
 # Snapshot observed on 2026-11-01; not a promise of later compatibility.
 UPSTREAM_REVIEW_SHA = "9997aa078b4da35e04bb492a8a27d45141f4b80b"
 REFERENCE_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
+REVIEWED_MODEL_REVISION = "cdbee75f17c01a7cc42f958dc650907174af0554"
 REFERENCE_TEMPLATE = "qwen3_nothink"
 SYNTHETIC_RIGHTS = "OWNER_ASSERTED_ORIGINAL_SYNTHETIC"
 FIELDS = frozenset({"instruction", "input", "output", "source_id",
@@ -81,8 +82,8 @@ def _validate_policy(policy: object) -> dict:
     if policy["base_model_id"] != REFERENCE_MODEL:
         raise ValueError("UNREVIEWED_BASE_MODEL_DENIED")
     sha = policy["base_model_revision"]
-    if not isinstance(sha, str) or not COMMIT.fullmatch(sha) or sha == "0" * 40:
-        raise ValueError("MODEL_REVISION_MUST_BE_PINNED")
+    if not isinstance(sha, str) or not COMMIT.fullmatch(sha) or sha != REVIEWED_MODEL_REVISION:
+        raise ValueError("UNREVIEWED_BASE_MODEL_REVISION_DENIED")
     license_sha = policy["manual_model_license_review_sha256"]
     if (not isinstance(license_sha, str) or not SHA.fullmatch(license_sha)):
         raise ValueError("MODEL_RIGHTS_EVIDENCE_DIGEST_REQUIRED")

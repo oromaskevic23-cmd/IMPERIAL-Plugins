@@ -34,8 +34,8 @@ def request():
             "tenant_id": "imperial-internal",
             "orchestrator_id": "engineering-orch",
             "base_model_id": REFERENCE_MODEL,
-            # Deliberately nonexistent test revision — NOT for actual fetching.
-            "base_model_revision": "1" * 40,
+            # Pinned real HF model revision; still NO download or license release.
+            "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
             "training_method": "QLORA",
             # Test digest is only a claim, NOT an actual verified model licence.
             "manual_model_license_review_sha256": "a" * 64,

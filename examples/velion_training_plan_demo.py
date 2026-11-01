@@ -24,8 +24,8 @@ def main() -> None:
         {
             "tenant_id": "imperial-internal", "orchestrator_id": "engineering-orch",
             "base_model_id": REFERENCE_MODEL,
-            # A deliberately fake example SHA, never use for real model fetching.
-            "base_model_revision": "1" * 40,
+            # Reviewed model revision; this demo still does not download any weights.
+            "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
             "training_method": "QLORA",
             # Only a test claim; not actual external licence verification.
             "manual_model_license_review_sha256": "a" * 64,
