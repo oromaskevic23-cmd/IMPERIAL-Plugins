@@ -8,6 +8,6 @@ permissions:
   contents: read
 jobs:
   enterprise-quality:
-    uses: oromaskevic23-cmd/oromaskevic23-cmd/.github/workflows/imperial-enterprise-reusable.yml@3f5d76f87eadd64746cc4b556a020af568f1ea23
+    uses: oromaskevic23-cmd/oromaskevic23-cmd/.github/workflows/imperial-enterprise-reusable.yml@4f081a8915667b7f650cf1021633b1923dc9d0a7
     permissions:
       contents: read
