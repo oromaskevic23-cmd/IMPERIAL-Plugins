@@ -8,3 +8,17 @@ __pycache__/
 *.db
 *.sqlite*
 .DS_Store
+
+
+# VELION local model training: never commit datasets, weights or credentials
+private-velion-*/
+private_training*/
+training_runs/
+*.safetensors
+*.gguf
+*.ckpt
+*.pt
+*.pth
+adapter_model.*
+owner-only-*.pem
+approval-envelope.json

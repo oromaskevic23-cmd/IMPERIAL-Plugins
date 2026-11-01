@@ -17,3 +17,11 @@ Snapshot 2026-10-31. `src/imperial_plugins` is an executable **local security re
 - Future P2: CONSTRUCTOR AI proof-carrying release, CRM-SOFFT and ORION typed adapters, richer VELION training and benchmarking.
 
 Evidence rule: only claim actual results shown by the current GitHub Actions run; a source build does not imply 24/7 deployment or financial operations.
+
+
+## v0.4 — model fine-tuning readiness
+
+- Source implemented and tested in CI: guarded VELION LLaMA-Factory training planner; pinned model/source revisions; offline synthetic-only dataset provenance; LoRA/QLoRA config generator; explicit-write private CLI; leakage, privacy and YAML negative tests.
+- P0 remaining: independently evidenced dataset/model licenses, actual Owner Ed25519/AI Passport authority, verified GPU driver/VRAM/free quotas, isolated training host, third-party dependency provenance and real training receipts.
+- P1 remaining: sealed third-party independent model benchmark, governed Model Registry, signed and revocable adapters, ProofGraph release anchoring, rollback.
+- Never equate training a model with certifying a professional NCA. No 100-agent live activation or improved VELION model is asserted.

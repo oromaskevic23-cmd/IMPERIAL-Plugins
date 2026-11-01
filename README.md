@@ -73,3 +73,17 @@ PYTHONPATH=src python3 tools/validate_manifests.py
 ```
 
 The demo uses test-only HMAC reference keys; no actual Ed25519 Owner credential, model, browser, payment, commercial platform or server runtime is invoked. The private production authority, revocation, independent QA, signed manifests and worker sandbox remain mandatory release blockers.
+
+
+## v0.4 — VELION × LLaMA-Factory Training Adapter
+
+An offline **LoRA/QLoRA configuration and synthetic-data preparation module** is now implemented. It validates local original-synthetic dataset claims, screens some secrets, rejects train/validation overlap, pins reviewed LLaMA-Factory and Qwen revisions, builds Alpaca/dataset_info and train YAML, and records SHA-256. The local CLI requires explicit --write and never downloads or fine-tunes a model. No independent model-performance claim or NCA production certification is made.
+
+See [complete VELION training architecture, licensing and procedures](docs/VELION_LLAMAFACTORY_TRAINING.md), [adapter source](src/imperial_plugins/llamafactory_adapter.py), [offline CLI](tools/prepare_velion_training.py) and [synthetic demonstration](examples/velion_training_plan_demo.py).
+
+~~~bash
+PYTHONPATH=src python3 examples/velion_training_plan_demo.py
+PYTHONPATH=src python3 tools/prepare_velion_training.py --help
+~~~
+
+Third-party LLaMA-Factory and Qwen model weights retain their own Apache-2.0 rights; no third-party source is represented as IMPERIAL-owned.

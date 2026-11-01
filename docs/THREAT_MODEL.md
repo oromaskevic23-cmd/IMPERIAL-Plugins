@@ -32,3 +32,10 @@ No PASS or deployed/24×7 claim is made until external evidence exists.
 - The local Owner Kill Switch denies both first-time records and previously recorded replays.
 
 Residual P0 risks remain: local SQLite does not provide distributed exactly-once processing or isolation against host administrators; HMAC keys are reference test keys, not Owner's asymmetric signing authority; no remote NCA execution or external immutable evidence has been tested. Do not assign a production PASS to a unit test.
+
+
+## v0.4 — training data and model supply-chain threats
+
+The new adapter accepts owner-asserted synthetic PUBLIC data only, performs conservative token/email screening, checks source IDs and exact train/validation prompt overlap, pins model/repository revisions, disables remote-code trust and experiment telemetry, and never invokes GPU jobs. It deliberately does not treat validation as an independent sealed exam.
+
+Residual risk: source rights are self-asserted, privacy detection is incomplete, near-duplicates are not detected, dependencies/weights are not downloaded or verified, CUDA/bitsandbytes resource fit is unmeasured, and no real training or independent model certification has been performed.

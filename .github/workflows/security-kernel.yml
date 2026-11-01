@@ -26,3 +26,5 @@ jobs:
         run: PYTHONPATH=src python3 examples/federated_fabric_demo.py
       - name: Manifest validation
         run: PYTHONPATH=src python3 tools/validate_manifests.py
+      - name: VELION LLaMA-Factory offline plan demo
+        run: PYTHONPATH=src python3 examples/velion_training_plan_demo.py

@@ -23,3 +23,12 @@ Additional planned integrations: HANTER transport adapter, Enterprise Skills reg
 | ProofGraph Evidence | `create_proof_bundle`, `verify_proof_bundle` | SHA-256 linked untrusted artifact and QA bytes; mutation detection | independent QA, externally immutable proofs, Owner signature |
 
 The synthetic integrated example is [examples/federated_fabric_demo.py](../examples/federated_fabric_demo.py); it intentionally **does not** load plugins dynamically or call models. A real signed AI Passport cannot be replaced by this public HMAC simulation.
+
+
+## v0.4 — VELION Training Adapter
+
+| Plugin | API | Tested code | Explicitly not implemented |
+| --- | --- | --- | --- |
+| VELION × LLaMA-Factory | prepare_velion_finetune_plan; prepare_velion_training.py | offline Alpaca and dataset_info generator, LoRA/QLoRA YAML, synthetic-only license/PII review gates, split checks, SHA-256 evidence, pinned reference model, private explicit-write CLI | actual training, GPU resources, independently verified model/data title, blind final evaluation or model release |
+
+Detailed [VELION LLaMA-Factory integration](VELION_LLAMAFACTORY_TRAINING.md). The upstream LLaMA-Factory code is **not** included or relicensed.
