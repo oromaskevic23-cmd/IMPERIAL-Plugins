@@ -87,3 +87,21 @@ PYTHONPATH=src python3 tools/prepare_velion_training.py --help
 ~~~
 
 Third-party LLaMA-Factory and Qwen model weights retain their own Apache-2.0 rights; no third-party source is represented as IMPERIAL-owned.
+
+## IMPERIAL-Skill v0.2.0 — verified cross-repository contract
+
+The standalone [IMPERIAL-Skill](https://github.com/oromaskevic23-cmd/IMPERIAL-Skill)
+repository now owns the versioned Enterprise Skills manifest, pinned dependency
+DAG, exam-definition provenance, guarded Owner/AI Passport plan checks, signed
+source review, source-only CLI and local ProofGraph/Audit Ledger implementation.
+
+Its [GitHub Actions](https://github.com/oromaskevic23-cmd/IMPERIAL-Skill/actions/workflows/enterprise-skill-ci.yml)
+test the actual pinned IMPERIAL-Plugins validation contract across Python 3.11
+and 3.12, rather than claiming a live orchestration service. The two repositories
+remain independent: this plugin package does not inherit release privileges
+from a passing Skill review or from a shared-secret HMAC demonstration.
+
+**Integration status:** source-contract compatible, not production-connected.
+The real Owner key, AI Passport, independent professional QA and actual NCA
+worker require separate evidence and approval.
+
