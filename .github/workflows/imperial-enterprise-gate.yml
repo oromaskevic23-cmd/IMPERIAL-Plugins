@@ -1,0 +1,13 @@
+name: IMPERIAL Enterprise Error Gate
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  enterprise-quality:
+    uses: oromaskevic23-cmd/oromaskevic23-cmd/.github/workflows/imperial-enterprise-reusable.yml@3f5d76f87eadd64746cc4b556a020af568f1ea23
+    permissions:
+      contents: read
