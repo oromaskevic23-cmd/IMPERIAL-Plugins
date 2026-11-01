@@ -1,0 +1,8 @@
+{
+  "id": "imperial.velion-llamafactory-training",
+  "version": "0.4.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Offline license-aware synthetic dataset and LLaMA-Factory LoRA/QLoRA plan; no model download or GPU execution."
+}
