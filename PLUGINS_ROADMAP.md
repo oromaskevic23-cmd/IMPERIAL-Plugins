@@ -8,3 +8,12 @@ Snapshot 2026-10-31. `src/imperial_plugins` is an executable **local security re
 - **P2 planned:** CONSTRUCTOR AI, VELION, ORION, CRM-SOFFT and NCA simulation/training adapters.
 
 **Release policy:** source checks are not proof of a live production service. No external payments, platform logins, wallet operations or commercial tasks without specific owner approval and evidence.
+
+## 2026-11-01 implementation sprint (verified code, NOT production)
+
+- P1 code implemented: Enterprise Skills, HANTER Federated Intake, ProofGraph integrity, negative tests, integrated demonstration and CI manifest validation.
+- P0 still pending: separately enrolled Owner Ed25519 keys and AI Passport, protected HANTER issuer service, authenticated federation, revocation, least-privilege sandbox, external proof anchoring, runtime heartbeat and independent NCA QA.
+- Future P1: independently attested plugin releases, version pinning and rollback protocol, genuine n8n account integration after authorization.
+- Future P2: CONSTRUCTOR AI proof-carrying release, CRM-SOFFT and ORION typed adapters, richer VELION training and benchmarking.
+
+Evidence rule: only claim actual results shown by the current GitHub Actions run; a source build does not imply 24/7 deployment or financial operations.

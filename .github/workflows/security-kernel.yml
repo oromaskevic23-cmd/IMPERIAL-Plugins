@@ -10,6 +10,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - name: Python version
         run: python3 --version
       - name: Compile source
@@ -20,5 +22,7 @@ jobs:
         run: python3 -m unittest discover -s plugins/guardian-policy -p 'test_*.py' -v
       - name: Legacy ledger tests
         run: python3 -m unittest discover -s plugins/audit-ledger -p 'test_*.py' -v
+      - name: Synthetic federated fabric example
+        run: PYTHONPATH=src python3 examples/federated_fabric_demo.py
       - name: Manifest validation
         run: PYTHONPATH=src python3 tools/validate_manifests.py

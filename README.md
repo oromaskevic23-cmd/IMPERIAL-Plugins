@@ -54,3 +54,22 @@ Five declarative plugin manifest examples and deterministic offline adapters are
 ### Canonical founder and public project identity
 
 This public repository is listed in the [founder-maintained IMPERIAL Core engineering portfolio](https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/projects/). The public [engineering source registry](https://oromaskevic23-cmd.github.io/Capital-Core-Public/reference/projects/) links this source to the account's published project records under **Alexander Nikolaevich Romaskevich (RomaskevicH)**, Founder, Owner and CEO of IMPERIAL Core and its final architectural decision authority. Repository-specific governance, contributor rights, third-party intellectual property, and documented independence of individual projects remain unchanged. Publication does not prove production execution, market adoption or Google indexing.
+
+## v0.3 — Enterprise Skills × HANTER × ProofGraph plugin fabric
+
+Three new functional modules have been added to the Python package:
+
+- **Enterprise Skills Registry:** closed schemas, tenant/orchestrator/Runtime Domain binding, explicit capability controls, and zero spending. Descriptor registration creates no permission to execute.
+- **HANTER Federated Intake:** Guardian Core and skill-checked local SQLite task records, explicit federated routes, kill-switch enforcement, atomic duplicate-task handling, and no credentials stored in receipts. No remote worker or plugin is invoked.
+- **ProofGraph Evidence:** content hashes for manifests, untrusted artifacts and QA-report bytes, with optional previous-proof SHA-256. Integrity verification is **not** independent QA, cryptographic author identity or a release permit.
+- **Integration suite:** a complete offline test path through HANTER → VELION route plan → ProofGraph → Audit Ledger, including n8n review and NCA simulation semantics.
+
+Run the source and deterministic synthetic demo (Python 3.11+, no third-party dependencies):
+
+```sh
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+PYTHONPATH=src python3 examples/federated_fabric_demo.py
+PYTHONPATH=src python3 tools/validate_manifests.py
+```
+
+The demo uses test-only HMAC reference keys; no actual Ed25519 Owner credential, model, browser, payment, commercial platform or server runtime is invoked. The private production authority, revocation, independent QA, signed manifests and worker sandbox remain mandatory release blockers.

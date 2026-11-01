@@ -21,3 +21,14 @@
 - License counsel review and copyright attribution audit.
 
 No PASS or deployed/24×7 claim is made until external evidence exists.
+
+## Newly tested v0.3 risks
+
+- Cross-tenant agent and orchestrator reuse is rejected by the explicit federated route table.
+- Changed task body with an existing tenant/task ID is denied by atomic SQLite idempotency; exact retries are acknowledged without execution.
+- The HANTER intake stores a SHA-256 fingerprint and a no-execution receipt, not signed passport/approval bodies or keys.
+- Enterprise Skills refuses unsafe fields, commercial execution capabilities, outside effects and any nonzero budget.
+- ProofGraph rejects altered artifact/QA bytes, privilege inflation, tampered previous-proof links and invented independent QA claims.
+- The local Owner Kill Switch denies both first-time records and previously recorded replays.
+
+Residual P0 risks remain: local SQLite does not provide distributed exactly-once processing or isolation against host administrators; HMAC keys are reference test keys, not Owner's asymmetric signing authority; no remote NCA execution or external immutable evidence has been tested. Do not assign a production PASS to a unit test.
