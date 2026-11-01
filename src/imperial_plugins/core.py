@@ -98,7 +98,10 @@ class GuardianCore:
     def evaluate(self, manifest: dict, request: dict, *, now: int | None = None) -> dict:
         def deny(reason: str) -> dict:
             return {"allowed": False, "reason": reason}
-        if self.kill_switch or os.getenv("IMPERIAL_OWNER_KILL_SWITCH", "0") == "1":
+        # An explicit local test opt-out is the only accepted disabled value.
+        # Unknown values must never silently turn a requested emergency stop off.
+        switch_value = os.getenv("IMPERIAL_OWNER_KILL_SWITCH")
+        if self.kill_switch or (switch_value is not None and switch_value != "0"):
             return deny("owner_kill_switch")
         try:
             checked = validate_manifest(manifest)
@@ -108,7 +111,7 @@ class GuardianCore:
             return deny("request_invalid")
         action = request.get("action")
         task_id = request.get("task_id")
-        if action not in CAPABILITIES or action not in checked["capabilities"]:
+        if type(action) is not str or action not in CAPABILITIES or action not in checked["capabilities"]:
             return deny("capability_denied")
         if not isinstance(task_id, str) or not AGENT_PATTERN.fullmatch(task_id):
             return deny("task_invalid")
