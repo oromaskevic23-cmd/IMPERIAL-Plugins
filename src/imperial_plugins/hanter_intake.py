@@ -8,6 +8,7 @@ import hashlib
 import hmac
 import json
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 from .core import AGENT_PATTERN, GuardianCore, canonical, validate_manifest
 from .enterprise_skills import DOMAINS, EnterpriseSkillsRegistry
@@ -39,6 +40,9 @@ class FederatedRouteTable:
 
     def match(self, *, tenant_id: str, orchestrator_id: str,
               agent_id: str, runtime_domain: str) -> bool:
+        if any(not isinstance(x, str) for x in (
+             tenant_id, orchestrator_id, agent_id, runtime_domain)):
+            return False
         return self._routes.get(agent_id) == {
             "tenant_id": tenant_id, "orchestrator_id": orchestrator_id,
             "agent_id": agent_id, "runtime_domain": runtime_domain}
@@ -59,7 +63,7 @@ class HanterIntakeQueue:
             raise ValueError("BAD_SKILLS")
         self.path, self.guardian, self.routes, self.skills = str(path), guardian, routes, skills
         self.kill_switch = kill_switch
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             db.execute("""CREATE TABLE IF NOT EXISTS proposals(
               tenant_id TEXT NOT NULL,task_id TEXT NOT NULL,
               agent_id TEXT NOT NULL,orchestrator_id TEXT NOT NULL,
@@ -118,7 +122,7 @@ class HanterIntakeQueue:
                    "execution_authorized": False, "model_invoked": False,
                    "independent_qa_verified": False, "external_effects": False,
                    "spending_usd": 0}
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             try:
                 existing = db.execute(
@@ -128,7 +132,11 @@ class HanterIntakeQueue:
                     db.commit()
                     if not hmac.compare_digest(existing[0], digest):
                         return deny("TASK_REPLAY_WITH_DIFFERENT_CONTENT")
-                    if json.loads(existing[1]) != receipt:
+                    try:
+                        saved_receipt = json.loads(existing[1])
+                    except (TypeError, ValueError, json.JSONDecodeError):
+                        return deny("PERSISTED_RECEIPT_TAMPERED")
+                    if saved_receipt != receipt:
                         return deny("PERSISTED_RECEIPT_TAMPERED")
                     return {"recorded": True, "reason": "IDEMPOTENT_REPLAY",
                             "receipt": receipt, "execution_authorized": False}
@@ -146,5 +154,5 @@ class HanterIntakeQueue:
                 "receipt": receipt, "execution_authorized": False}
 
     def count(self) -> int:
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             return db.execute("SELECT COUNT(*) FROM proposals").fetchone()[0]

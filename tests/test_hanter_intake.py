@@ -135,4 +135,19 @@ class TestHanterIntake(unittest.TestCase):
         bad=req();bad["action"]={"exec":"anything"}
         self.assertFalse(self.record(request=bad)["recorded"])
 
+
+    def test_untrusted_route_inputs_do_not_crash(self):
+        for bad in ({"agent_id":[]},{"tenant_id":[]},{"orchestrator_id":[]},
+                    {"runtime_domain":[]},{"skill_id":[]}):
+            with self.subTest(bad=bad):
+                self.assertFalse(self.record(**bad)["recorded"])
+
+    def test_corrupted_stored_receipt_is_denied_without_dispatch(self):
+        self.record()
+        with sqlite3.connect(self.path) as db:
+            db.execute("UPDATE proposals SET receipt_json='{'")
+        response=self.record()
+        self.assertEqual(response["reason"],"PERSISTED_RECEIPT_TAMPERED")
+        self.assertFalse(response["execution_authorized"])
+
 if __name__=="__main__":unittest.main()

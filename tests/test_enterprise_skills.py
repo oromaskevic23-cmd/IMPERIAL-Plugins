@@ -67,4 +67,16 @@ class TestEnterpriseSkills(unittest.TestCase):
         self.assertEqual([x["skill_id"] for x in self.registry.snapshot()],
           ["imperial.skill.code-draft","imperial.skill.route-check"])
 
+
+    def test_unhashable_planning_arguments_are_denied(self):
+        self.registry.register(example())
+        defaults={"tenant_id":"tenant-01","skill_id":"imperial.skill.code-draft",
+                  "orchestrator_id":"engineering-orch",
+                  "runtime_domain":"CODE_ENGINEERING","capability":"simulate:task"}
+        for field in defaults:
+            with self.subTest(field=field):
+                got=self.registry.plan(**(defaults|{field:[]}))
+                self.assertFalse(got["planned"])
+                self.assertFalse(got["execution_authorized"])
+
 if __name__=="__main__":unittest.main()

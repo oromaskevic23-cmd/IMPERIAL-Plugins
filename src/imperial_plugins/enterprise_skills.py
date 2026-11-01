@@ -61,6 +61,11 @@ class EnterpriseSkillsRegistry:
 
     def plan(self, *, tenant_id: str, skill_id: str, orchestrator_id: str,
              runtime_domain: str, capability: str) -> dict:
+        if (not isinstance(tenant_id, str) or not isinstance(skill_id, str)
+            or not isinstance(orchestrator_id, str)
+            or not isinstance(runtime_domain, str) or not isinstance(capability, str)):
+            return {"planned": False, "reason": "SKILL_OR_BOUNDARY_DENIED",
+                    "execution_authorized": False}
         skill = self._skills.get((tenant_id, skill_id))
         if (skill is None or skill["orchestrator_id"] != orchestrator_id
             or skill["runtime_domain"] != runtime_domain
