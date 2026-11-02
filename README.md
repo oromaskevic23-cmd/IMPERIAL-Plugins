@@ -34,6 +34,12 @@ python3 -m unittest discover -s plugins/audit-ledger -p 'test_*.py' -v
 
 Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `GuardianCore.evaluate`, and `AuditLedger`. Signing helpers are for trusted backend/issuer code, **never for untrusted plugins**. Cryptographic authentication here uses a **shared-secret HMAC**, not the future asymmetric AI Passport/Ed25519 issuance infrastructure.
 
+## Chat History Recovery — Ten Specialized Search NCA (v0.1)
+
+The [offline Chat History Recovery Plugin](plugins/chat-history-recovery/SKILL.md) provides a real Python/SQLite FTS5 index and ten role-specific source-grounded searches for **user-supplied ChatGPT exports**, including optional historical filtering before the first **user mention of Val Town** (heuristic) or an Owner-confirmed UTC date. Run `PYTHONPATH=src python tools/chat_history_recovery.py --help` locally and review its [adversarial test suite](tests/test_chat_recovery.py). Results contain original conversation/message IDs and redacted excerpts, not fabricated live chat links.
+
+This module does **not** automatically read ChatGPT account history, run ten LLM agents, access private servers, or encrypt the local database. No personal export is stored in the repository. The 6–8-week roadmap is a target for subsequent work, not a claim of autonomous background progress.
+
 ## Canonical architecture
 
 Architect → HANTER (command center) → **federated orchestrators** → NCA/sub-NCA workers. ORION is collective intelligence, not a replacement for orchestrator isolation. The Guardian Core + Approval Gateway + Audit Ledger apply before all execution boundaries; every agent is expected to hold an AI Passport and Enterprise Skills. Runtime Domains, ProofGraph, IntentLock, Owner Kill Switch, Zero Trust, Public/Private Boundary and **CRYPTO IMPERIAL Ecosystem Boundary** remain mandatory.
