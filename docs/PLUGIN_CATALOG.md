@@ -14,6 +14,14 @@ Additional planned integrations: HANTER transport adapter, Enterprise Skills reg
 
 **Cross-boundary rule:** a plan, score or static inspection never authorizes execution. Guardian Core, Approval Gateway, Owner Kill Switch, AI Passport, Runtime Domain, Enterprise Skills and Audit Ledger remain separate mandatory controls.
 
+## Chat History Recovery — original executable offline source (v0.1)
+
+| Plugin | Python API | Actual verified scope | Not yet provided |
+| --- | --- | --- | --- |
+| Chat History Recovery (10 search NCA) | `build_index`, `recover` | User-supplied local ChatGPT text export, SQLite FTS5, ten deterministic roles, exported source refs, chronology, basic secret redaction, negative tests | Live ChatGPT account connector, 10 running LLM workers, fully encrypted private store, true Val Town start verification, multi-export indexing, production NCA credentials |
+
+See [full skill specification](../plugins/chat-history-recovery/SKILL.md) and [CLI](../tools/chat_history_recovery.py). Supplied source IDs are export locators, **not** current ChatGPT permalinks. FREE_ONLY and the Public/Private Boundary are mandatory.
+
 ## v0.3 source-implemented plugins — 2026-11-01
 
 | Plugin | Python API | Verified design contract | Deliberately not claimed |

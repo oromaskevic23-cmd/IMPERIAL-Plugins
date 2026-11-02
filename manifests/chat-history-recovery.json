@@ -1,0 +1,8 @@
+{
+  "id": "imperial.chat-history-recovery",
+  "version": "0.1.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Offline read-only redacted search of user-supplied ChatGPT conversation exports by ten scoped NCA specialist search roles. No remote history access or worker execution."
+}

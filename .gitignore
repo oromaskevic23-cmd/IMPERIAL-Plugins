@@ -22,3 +22,10 @@ training_runs/
 adapter_model.*
 owner-only-*.pem
 approval-envelope.json
+
+# Owner-private ChatGPT exports and recovery index (NEVER commit)
+conversations.json
+conversations-*.json
+private-chat-export*/
+private-chat-recovery*/
+*chat-history*.sqlite*
