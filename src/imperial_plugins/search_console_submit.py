@@ -186,6 +186,7 @@ class SubmissionGate:
             with sqlite3.connect(self.database_path) as db:
                 db.execute("UPDATE submissions SET status='NEEDS_RECONCILIATION' WHERE operation_id=?",
                            (intent.operation_id,))
+                self._record_event(db, "UNCONFIRMED_HTTP", intent.operation_id, digest)
             raise GoogleAccessError("GOOGLE_SUBMISSION_NOT_CONFIRMED")
         with sqlite3.connect(self.database_path) as db:
             db.execute("UPDATE submissions SET status='GOOGLE_SITEMAP_SUBMITTED', provider_http_status=? WHERE operation_id=?",
