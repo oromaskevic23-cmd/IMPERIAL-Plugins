@@ -34,6 +34,31 @@ python3 -m unittest discover -s plugins/audit-ledger -p 'test_*.py' -v
 
 Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `GuardianCore.evaluate`, and `AuditLedger`. Signing helpers are for trusted backend/issuer code, **never for untrusted plugins**. Cryptographic authentication here uses a **shared-secret HMAC**, not the future asymmetric AI Passport/Ed25519 issuance infrastructure.
 
+## IMPERIAL Search Indexing MCP — protocol server v0.1 (2026-11-03)
+
+**A runnable, read-only local MCP server has been implemented and added to the enterprise test suite.** It exposes four indexing tools using both modern **MCP 2026-07-28** discovery and legacy **MCP 2025-11-25** initialization, through a newline-delimited JSON-RPC stdio process.
+
+- **Verified public project registry:** 23 technical/business projects from 25 public repos; 7 private repos explicitly excluded from the snapshot.
+- **Public-site audit:** only two canonical GitHub Pages properties allowed, checking actual HTTP, robots.txt, XML sitemap, canonical and JSON-LD ItemList.
+- **Search Console integration plan:** correct Google property/sitemap URLs, with Google indexing and submission status always reported as **UNVERIFIED** unless separately obtained from Google.
+- **No unauthorized submission:** no Google credentials, write methods, indexing API misuse, payout capability, arbitrary URL fetch or hidden private repository access.
+- **Source:** [indexing_mcp.py](src/imperial_plugins/indexing_mcp.py) · [public-only inventory](data/search-indexing-public.json) · [adversarial tests](tests/test_indexing_mcp.py) · [MCP CI](.github/workflows/search-indexing-mcp.yml).
+- **Operations and connecting a compatible MCP client:** [Complete local integration guide](docs/SEARCH_INDEXING_MCP.md).
+
+Start the real MCP stdio process from a local checkout:
+
+```bash
+python3 tools/search_indexing_mcp.py
+```
+
+Run the tests independently:
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_indexing_mcp.py' -v
+```
+
+This is **source implementation**, not a hosted server or already-installed ChatGPT integration. It does not submit sitemaps, prove Google Search Console ownership, or verify that any project is indexed or ranked by Google.
+
 ## Chat History Recovery — Ten Specialized Search NCA (v0.1)
 
 The [offline Chat History Recovery Plugin](plugins/chat-history-recovery/SKILL.md) provides a real Python/SQLite FTS5 index and ten role-specific source-grounded searches for **user-supplied ChatGPT exports**, including optional historical filtering before the first **user mention of Val Town** (heuristic) or an Owner-confirmed UTC date. Run `PYTHONPATH=src python tools/chat_history_recovery.py --help` locally and review its [adversarial test suite](tests/test_chat_recovery.py). Results contain original conversation/message IDs and redacted excerpts, not fabricated live chat links.
