@@ -65,7 +65,9 @@ Architect / Final Architectural Decision Authority
           -> Search Indexing MCP (this public read-only interface)
               -> Public registry / approved GitHub Pages
               -> HTTP / robots / XML sitemap / JSON-LD source evidence
-          -> Private OAuth-bound Google Search Console Connector (not implemented)
+          -> Privately provisioned Google Search Console read connector (source implemented, not OAuth-connected)
+              -> sites.list / sitemaps.list / URL Inspection (read-only API methods)
+              -> Mutation path kept disabled; owner-approved submit still requires separate gateway
               -> AI Passport + Enterprise Skills
               -> Guardian Core (deny by default)
               -> Approval Gateway (explicit human authorization)
@@ -82,7 +84,7 @@ The private production connector must use OAuth with the user's actual Search Co
 1. Verified current GitHub read-only token scope or safe public inventory crawl; detect repo-visibility changes before updating the public registry. Never write private names/paths into publicly exposed telemetry.
 2. Actual local operator-controlled MCP installation, host-level permissions and audit logs.
 3. Independent OAuth connection for both distinct Search Console URL-prefix properties.
-4. Explicit Approval Gateway authorization, dry run and receipts for sitemap submission; no silent automatic re-submission and no false `URL_INDEXED`.
+4. Implement, independently review and authorize the separate sitemap submission writer only after real owner approval; the currently implemented Google adapter is **read-only** and provides an exact allowlisted PUT preflight but does not send it.
 5. Optional Google Search Console read-only inspection reports and reconciled errors.
 6. Separate sandbox integration, credential isolation, signed releases, rollback and security review.
 7. If ever served over HTTP, implement a production-approved Streamable HTTP transport, Origin checks, authenticated sessions, rate limits and network ACLs. **Do not expose this stdio prototype directly to the public internet**.
@@ -92,6 +94,9 @@ The private production connector must use OAuth with the user's actual Search Co
 - MCP 2026-07-28 tools: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
 - MCP versioning: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
 - MCP 2025-11-25 tools: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+- Google Search Console sites.list: https://developers.google.com/webmaster-tools/v1/sites/list
+- Google Search Console sitemaps.list: https://developers.google.com/webmaster-tools/v1/sitemaps/list
+- Google URL Inspection: https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect
 - Google Search Console sitemaps.submit: https://developers.google.com/webmaster-tools/v1/sitemaps/submit
 - Google restricted Indexing API: https://developers.google.com/search/apis/indexing-api/v3/using-api
 
