@@ -1,0 +1,49 @@
+name: IMPERIAL Search Indexing MCP — protocol and source tests
+
+on:
+  pull_request:
+    paths:
+      - "src/imperial_plugins/indexing_mcp.py"
+      - "data/search-indexing-public.json"
+      - "tools/search_indexing_mcp.py"
+      - "tests/test_indexing_mcp.py"
+      - ".github/workflows/search-indexing-mcp.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/imperial_plugins/indexing_mcp.py"
+      - "data/search-indexing-public.json"
+      - "tools/search_indexing_mcp.py"
+      - "tests/test_indexing_mcp.py"
+      - ".github/workflows/search-indexing-mcp.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mcp-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Checkout exact revision without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile MCP source, runner and tests
+        run: python -m py_compile src/imperial_plugins/indexing_mcp.py tools/search_indexing_mcp.py tests/test_indexing_mcp.py
+      - name: Run MCP offline protocol and adversarial tests
+        run: PYTHONPATH=src python -m unittest discover -s tests -p 'test_indexing_mcp.py' -v
+      - name: Verify no Google API credentials or write permissions are required
+        run: |
+          test -f data/search-indexing-public.json
+          test -f docs/SEARCH_INDEXING_MCP.md
+          ! grep -q '"name": "imperial.submit_google_indexing"' src/imperial_plugins/indexing_mcp.py
