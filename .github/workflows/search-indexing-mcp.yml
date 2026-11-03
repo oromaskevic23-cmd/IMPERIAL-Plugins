@@ -4,17 +4,21 @@ on:
   pull_request:
     paths:
       - "src/imperial_plugins/indexing_mcp.py"
+      - "src/imperial_plugins/search_console_read.py"
       - "data/search-indexing-public.json"
       - "tools/search_indexing_mcp.py"
       - "tests/test_indexing_mcp.py"
+      - "tests/test_search_console_read.py"
       - ".github/workflows/search-indexing-mcp.yml"
   push:
     branches: [main]
     paths:
       - "src/imperial_plugins/indexing_mcp.py"
+      - "src/imperial_plugins/search_console_read.py"
       - "data/search-indexing-public.json"
       - "tools/search_indexing_mcp.py"
       - "tests/test_indexing_mcp.py"
+      - "tests/test_search_console_read.py"
       - ".github/workflows/search-indexing-mcp.yml"
   workflow_dispatch:
 
