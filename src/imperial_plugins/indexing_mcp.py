@@ -27,7 +27,7 @@ VERSION_META = "io.modelcontextprotocol/protocolVersion"
 CAPABILITIES_META = "io.modelcontextprotocol/clientCapabilities"
 SERVER_INFO_META = "io.modelcontextprotocol/serverInfo"
 SERVER_INFO = {"name": "imperial-search-indexing-mcp", "version": "0.1.0"}
-MANIFEST = Path(__file__).resolve().parents[2] / "manifests" / "search-indexing-public.json"
+MANIFEST = Path(__file__).resolve().parents[2] / "data" / "search-indexing-public.json"
 MAX_BYTES = 1_200_000
 MAX_RPC_BYTES = 131_072
 
