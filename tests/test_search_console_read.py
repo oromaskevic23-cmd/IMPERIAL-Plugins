@@ -127,6 +127,37 @@ class SearchConsoleTests(unittest.TestCase):
             with self.subTest(extra_path=extra_path), self.assertRaises(GoogleAccessError):
                 request_google("GET", GOOGLE_SITES + extra_path, "dummy-only-never-real")
 
+    def test_operator_cli_blocks_without_real_oauth(self):
+        import os
+        import subprocess
+        import sys
+        from pathlib import Path
+        repo = Path(__file__).resolve().parents[1]
+        env = os.environ.copy()
+        env.pop("IMPERIAL_GSC_ACCESS_TOKEN", None)
+        cmd = [sys.executable, str(repo / "tools/gsc_operator.py"),
+               "--site", "founder", "--check", "property"]
+        output = subprocess.run(cmd, cwd=repo, env=env, capture_output=True,
+                                text=True, timeout=10)
+        self.assertEqual(output.returncode, 2)
+        result = json.loads(output.stdout)
+        self.assertEqual(result["reason"], "GOOGLE_OAUTH_NOT_CONNECTED")
+        self.assertEqual(result["google_indexed"], "UNVERIFIED")
+
+    def test_operator_cli_only_returns_submission_preflight(self):
+        import subprocess
+        import sys
+        from pathlib import Path
+        repo = Path(__file__).resolve().parents[1]
+        result = subprocess.run(
+            [sys.executable, str(repo / "tools/gsc_operator.py"),
+             "--site", "company", "--check", "plan"],
+            cwd=repo, capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["status"], "INTENT_ONLY_OWNER_APPROVAL_REQUIRED")
+        self.assertEqual(payload["google_submitted"], "UNVERIFIED")
+
     def test_malformed_google_response_denied(self):
         reader = SearchConsoleReadBridge(
             access_token="dummy-only-never-real",
