@@ -14,6 +14,14 @@ Additional planned integrations: HANTER transport adapter, Enterprise Skills reg
 
 **Cross-boundary rule:** a plan, score or static inspection never authorizes execution. Guardian Core, Approval Gateway, Owner Kill Switch, AI Passport, Runtime Domain, Enterprise Skills and Audit Ledger remain separate mandatory controls.
 
+## v0.5 — IMPERIAL Search Indexing MCP (local stdio)
+
+| Plugin | MCP tools | Real checked scope | Explicitly unavailable |
+| --- | --- | --- | --- |
+| Search Indexing MCP | `imperial.indexing_status`, `imperial.list_public_projects`, `imperial.audit_published_site`, `imperial.search_console_plan` | Dual-era MCP discovery/tool calls, 23 publicly listed projects, two audited Pages properties, strict URL allowlist, real HTTP validation, 20 adversarial tests passing on each of Python 3.11 and 3.12 | Actual Google Search Console OAuth, sitemap submission, indexing or rankings, hosted/installed MCP service, private project access |
+
+**Evidence:** [GitHub Actions PASS](https://github.com/oromaskevic23-cmd/IMPERIAL-Plugins/actions/runs/41704769008) · [architecture and launch](SEARCH_INDEXING_MCP.md) · [evidence register](SEARCH_INDEXING_MCP_EVIDENCE_20261103.md). This is working **local source**, not an external hosted plugin.
+
 ## Chat History Recovery — original executable offline source (v0.1)
 
 | Plugin | Python API | Actual verified scope | Not yet provided |
