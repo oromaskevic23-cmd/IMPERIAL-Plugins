@@ -37,9 +37,11 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 def request_google(method: str, url: str, access_token: str,
                    body: dict | None = None) -> tuple[int, bytes]:
     """Host-side transport; no arbitrary URLs, redirect following or token logging."""
-    allowed = (url == GOOGLE_SITES or
-               url.startswith(GOOGLE_SITES + "/") or
-               url == GOOGLE_INSPECTION)
+    allowed_gets = {GOOGLE_SITES}
+    for site in ALLOWED_SITES.values():
+        allowed_gets.add(GOOGLE_SITES + "/" + urllib.parse.quote(site["base"], safe="") + "/sitemaps")
+    allowed = ((method == "GET" and url in allowed_gets) or
+               (method == "POST" and url == GOOGLE_INSPECTION))
     if not allowed or method not in {"GET", "POST"}:
         raise GoogleAccessError("GOOGLE_DESTINATION_DENIED")
     if method == "POST" and url != GOOGLE_INSPECTION:
