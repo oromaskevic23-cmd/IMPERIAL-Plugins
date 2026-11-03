@@ -120,6 +120,27 @@ PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_search_console_sub
 CI: [Search Indexing MCP workflow](../.github/workflows/search-indexing-mcp.yml).  
 A PASS proves tested source revision only, not a deployed HANTER agent or Google account authorization.
 
+## 9A. Post-submission reconciliation and read-only operator checks
+
+The reference [SubmissionGate.reconcile](../src/imperial_plugins/search_console_submit.py) now performs **no second PUT**. It checks the specific authorized property through `sites.list`, queries that property's `sitemaps.list`, and compares the exact approved sitemap URL. When Google's API lists it, the local transaction receives `GOOGLE_SITEMAP_OBSERVED` with a linked audit event. That is evidence the sitemap was registered in Search Console — **never proof its constituent pages are indexed**. When Google does not list the sitemap, the outcome remains ambiguous and the operation cannot automatically retry. If the SQLite audit chain is altered, reconciliation is denied.
+
+The [operator CLI](../tools/gsc_operator.py) provides explicit `property`, `sitemap`, `home`, `catalog` and `plan` checks for the fixed founder/company URLs. The private host must supply a **short-lived access token** through the runtime environment under `IMPERIAL_GSC_ACCESS_TOKEN`. Never pass credentials in command-line arguments, GitHub secrets/logs, user chat, or public URLs. With no token, actual checks return `GOOGLE_OAUTH_NOT_CONNECTED`. The `plan` operation is local and does not require Google access.
+
+Example to inspect the non-mutating submission intent from a checked-out repository:
+
+```sh
+python3 tools/gsc_operator.py --site founder --check plan
+python3 tools/gsc_operator.py --site company --check plan
+```
+
+These commands never submit a sitemap. For legitimate Google status checks, a **separately authorized owner-controlled runtime** must provision the access token and appropriate OAuth scope, then execute `--check property`, `--check sitemap`, `--check home` or `--check catalog` privately. No OAuth consent or token acquisition has occurred in this public repository.
+
+## 9B. HANTER Ed25519 approval evidence
+
+HANTER has a separate [pinned-public-key signature verifier](https://github.com/oromaskevic23-cmd/HANTER-Public/blob/main/hanter_pilot/gsc_approval_verifier.py) for two roles: **Owner** and **independent QA**. It verifies the cryptographic signatures over a domain-separated, canonical, operation-bound intent, with independent keys and issuer identities, distinct people, short validity and a fresh revocation snapshot. It supplies separate `approval_verifier` and `qa_verifier` callbacks to the existing `SubmissionGate`.
+
+The [cross-repository CI run](https://github.com/oromaskevic23-cmd/HANTER-Public/actions/runs/41731058389) passed on Python 3.11 and 3.12 with **12 signature tests per version** and a real in-process integration using the Plugins gate. Every private key and OAuth response was synthetic; **no Owner production key is enrolled and no Google submission was performed**. Do not confuse freshly generated test signers with the verified identity of a legal owner, and do not accept a test-selected public key as a production trust root.
+
 ## 10. What unlocks the real first submission
 
 Owner completes authorization for the precise GitHub Pages properties in Google Search Console and privately authorizes the OAuth application and its `webmasters` scope. Separately, a trusted private service must provide real verified Owner/QA signing authority, durable credentials and explicit approval. **Only then** can the `SubmissionGate` be connected to its exact allowlisted Google PUT transport. The submitted sitemap result must be retained with a Google API receipt and independently confirmed through Google Search Console.
