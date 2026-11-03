@@ -75,7 +75,7 @@ Architect / Final Architectural Decision Authority
               -> External API receipt + Search Console URL Inspection
 ```
 
-The private production connector must use OAuth with the user's actual Search Console property, isolated secrets, audit logs and explicit human approval for any write. Google Search Console `sitemaps.submit` accepts a `PUT` and requires `https://www.googleapis.com/auth/webmasters` — this local MVP intentionally does not use it. A genuine API success would prove only that a sitemap was **submitted**, not that URLs were indexed.
+The private production connector must use OAuth with the user's actual Search Console property, isolated secrets, audit logs and explicit human approval for any write. The separately implemented [Google submission gate](../src/imperial_plugins/search_console_submit.py) contains an exact allowlisted `PUT` transport, short-lived Owner/independent-QA verifier hooks, a default-enabled kill switch, local SQLite replay prevention and a hash-linked operation journal. It is **not exported as an MCP tool**, and actual Google OAuth and a production permit verifier are absent. See the [release and security specification](GOOGLE_SEARCH_CONSOLE_APPROVAL_GATEWAY.md). Google Search Console `sitemaps.submit` requires `https://www.googleapis.com/auth/webmasters`; successful submission is not proof that URLs were indexed.
 
 **Do not abuse Google's restricted Indexing API for generic software project pages**: it is intended for supported `JobPosting` and `BroadcastEvent` livestream structured-data content. Public project pages should use valid sitemap discovery and Search Console ownership/inspection rather than fake rapid-indexing APIs.
 
