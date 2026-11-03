@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 import os
+import re
 import time
 from pathlib import Path
 import sqlite3
@@ -97,12 +98,14 @@ class SubmissionGate:
             raise GoogleAccessError("OWNER_KILL_SWITCH")
         if not isinstance(intent, SitemapIntent):
             raise GoogleAccessError("INVALID_INTENT")
-        if intent.site_id not in ALLOWED_SITES:
+        if type(intent.site_id) is not str or intent.site_id not in ALLOWED_SITES:
             raise GoogleAccessError("UNREVIEWED_PROPERTY")
         for value in (intent.operation_id, intent.owner_proof_ref,
                       intent.qa_proof_ref, intent.policy_version):
-            if not isinstance(value, str) or not 3 <= len(value) <= 128:
+            if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9._:-]{3,128}", value):
                 raise GoogleAccessError("INCOMPLETE_APPROVAL_EVIDENCE")
+        if intent.owner_proof_ref == intent.qa_proof_ref:
+            raise GoogleAccessError("INDEPENDENT_QA_REQUIRED")
         clock = int(time.time()) if now is None else now
         if (type(intent.issued_at) is not int or type(intent.expires_at) is not int
             or type(clock) is not int or intent.issued_at > clock + 30
@@ -124,7 +127,8 @@ class SubmissionGate:
             raise GoogleAccessError("PRIVATE_WRITE_TRANSPORT_NOT_CONNECTED")
         site_audit = self.site_auditor(intent.site_id)
         if (not isinstance(site_audit, dict) or site_audit.get("site_id") != intent.site_id
-            or site_audit.get("public_http_audit") != "PASS"):
+            or site_audit.get("public_http_audit") != "PASS"
+            or site_audit.get("google_indexed") != "UNVERIFIED"):
             raise GoogleAccessError("PUBLIC_SITEMAP_AUDIT_REQUIRED")
         site = ALLOWED_SITES[intent.site_id]
         endpoint = GOOGLE_SITES + "/" + quote(site["base"], safe="") + "/sitemaps/" + quote(site["sitemap"], safe="")
