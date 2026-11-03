@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-11-03",
+  "founder": "Alexander Nikolaevich Romaskevich (RomaskevicH)",
+  "status": "PUBLIC_SOURCE_SNAPSHOT_NOT_GOOGLE_INDEX",
+  "projects": [
+    {
+      "name": "VELION-LLM-Public",
+      "description": "Model intelligence and bounded inference",
+      "url": "https://github.com/oromaskevic23-cmd/VELION-LLM-Public"
+    },
+    {
+      "name": "CONSTRUCTOR-AI",
+      "description": "Verifiable software engineering",
+      "url": "https://github.com/oromaskevic23-cmd/CONSTRUCTOR-AI"
+    },
+    {
+      "name": "HANTER-Public",
+      "description": "Federated AI Command Center",
+      "url": "https://github.com/oromaskevic23-cmd/HANTER-Public"
+    },
+    {
+      "name": "Nano-Core-Agents-Public",
+      "description": "Professional Nano Core Agent workforce",
+      "url": "https://github.com/oromaskevic23-cmd/Nano-Core-Agents-Public"
+    },
+    {
+      "name": "Legion-Public",
+      "description": "Agent teams and professional qualification",
+      "url": "https://github.com/oromaskevic23-cmd/Legion-Public"
+    },
+    {
+      "name": "ORION-Public",
+      "description": "Collective intelligence and research",
+      "url": "https://github.com/oromaskevic23-cmd/ORION-Public"
+    },
+    {
+      "name": "CYBER-HAK-Public",
+      "description": "Defensive cybersecurity verification",
+      "url": "https://github.com/oromaskevic23-cmd/CYBER-HAK-Public"
+    },
+    {
+      "name": "IMPERIAL-Plugins",
+      "description": "Enterprise plugin security and MCP",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-Plugins"
+    },
+    {
+      "name": "IMPERIAL-n8n-Automation",
+      "description": "Governed workflow automation",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-n8n-Automation"
+    },
+    {
+      "name": "SHPAIZMAN-ORCHESTRATOR",
+      "description": "Independent bounded business orchestrator",
+      "url": "https://github.com/oromaskevic23-cmd/SHPAIZMAN-ORCHESTRATOR"
+    },
+    {
+      "name": "Jem",
+      "description": "AI creative and film engineering",
+      "url": "https://github.com/oromaskevic23-cmd/Jem"
+    },
+    {
+      "name": "IMPERIAL-Venture-Factory",
+      "description": "New product and commercial research",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-Venture-Factory"
+    },
+    {
+      "name": "Capital-Core-Public",
+      "description": "Real estate city-agent architecture",
+      "url": "https://github.com/oromaskevic23-cmd/Capital-Core-Public"
+    },
+    {
+      "name": "CRYPTO-IMPERIAL-Ecosystem-Public",
+      "description": "Blockchain research boundary",
+      "url": "https://github.com/oromaskevic23-cmd/CRYPTO-IMPERIAL-Ecosystem-Public"
+    },
+    {
+      "name": "IMPERIUM",
+      "description": "Long-term architectural digital currency envisioned for AI agents worldwide; global adoption unverified",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIUM"
+    },
+    {
+      "name": "N.D.B",
+      "description": "NDB blockchain project",
+      "url": "https://github.com/oromaskevic23-cmd/N.D.B"
+    },
+    {
+      "name": "Lisa-",
+      "description": "LISA token research",
+      "url": "https://github.com/oromaskevic23-cmd/Lisa-"
+    },
+    {
+      "name": "IMPERIAL-AGI",
+      "description": "Long-horizon AI research",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-AGI"
+    },
+    {
+      "name": "AGY",
+      "description": "Public research repository; purpose not independently classified",
+      "url": "https://github.com/oromaskevic23-cmd/AGY"
+    },
+    {
+      "name": "Codex-Enterprise-IMPERIAL-Skills",
+      "description": "Third-party-compatible original integration work",
+      "url": "https://github.com/oromaskevic23-cmd/Codex-Enterprise-IMPERIAL-Skills"
+    },
+    {
+      "name": "IMPERIAL-CRM-Autopilot",
+      "description": "CRM-SOFFT governed commercial workflows",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-CRM-Autopilot"
+    },
+    {
+      "name": "IMPERIAL-Skill",
+      "description": "Federated Enterprise Skills",
+      "url": "https://github.com/oromaskevic23-cmd/IMPERIAL-Skill"
+    },
+    {
+      "name": "Supabase",
+      "description": "Independent Supabase integration architecture; not an official Supabase Inc. repository",
+      "url": "https://github.com/oromaskevic23-cmd/Supabase"
+    }
+  ],
+  "excluded_private_count": 7,
+  "other_public_repositories": [
+    {
+      "name": "oromaskevic23-cmd",
+      "purpose": "Founder profile, not separate product"
+    },
+    {
+      "name": "IMPERIAL-Core-US-HoldCo-Founder-Control-Blueprint",
+      "purpose": "Unexecuted legal planning, not a promoted software product"
+    }
+  ],
+  "sites": {
+    "founder": {
+      "base": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/",
+      "catalog": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/projects/",
+      "sitemap": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/sitemap.xml",
+      "robots": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/robots.txt"
+    },
+    "company": {
+      "base": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/",
+      "catalog": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/reference/projects/",
+      "sitemap": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/sitemap.xml",
+      "robots": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/robots.txt"
+    }
+  },
+  "source_evidence": {
+    "published_site_ci": "https://github.com/oromaskevic23-cmd/oromaskevic23-cmd/actions/runs/41702530969",
+    "verified_scope": "12 founder and 25 company sitemap entries; 6 public endpoints HTTP 200 on Nov 3, 2026"
+  },
+  "google_status": {
+    "search_console_verified": "UNVERIFIED",
+    "sitemap_submitted": "UNVERIFIED",
+    "url_indexed": "UNVERIFIED"
+  }
+}
