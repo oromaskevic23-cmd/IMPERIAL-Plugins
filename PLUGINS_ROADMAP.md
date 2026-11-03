@@ -19,6 +19,16 @@ Snapshot 2026-10-31. `src/imperial_plugins` is an executable **local security re
 Evidence rule: only claim actual results shown by the current GitHub Actions run; a source build does not imply 24/7 deployment or financial operations.
 
 
+## 2026-11-03 — Search Indexing MCP
+
+**E1 — SOURCE TESTED:** Implemented actual local stdio MCP JSON-RPC server (modern 2026-07-28 + legacy 2025-11-25); four read-only public project/site tools and an immutable website allowlist. Python 3.11/3.12 deterministic tests and live public-site audits passed on [CI revision `0e0116dd`](https://github.com/oromaskevic23-cmd/IMPERIAL-Plugins/actions/runs/41704769008).
+
+**E2 — NOT IMPLEMENTED:** Installation/connection into the user's MCP host, independent Search Console OAuth and actual Google account property verification, authorized API submission and external Google indexing report.
+
+**E3 — DEPLOYMENT NOT VERIFIED:** Hosted authenticated API, durable external logs, HANTER-to-MCP runtime and a signed AI Passport.
+
+Next actions: host-controlled MCP connection → independent Google OAuth/property owner verification → separately approved sitemap submit → Google-reported status receipts → operational monitoring. Avoid false automatic indexing claims. See [MCP design](docs/SEARCH_INDEXING_MCP.md).
+
 ## v0.4 — model fine-tuning readiness
 
 - Source implemented and tested in CI: guarded VELION LLaMA-Factory training planner; pinned model/source revisions; offline synthetic-only dataset provenance; LoRA/QLoRA config generator; explicit-write private CLI; leakage, privacy and YAML negative tests.
