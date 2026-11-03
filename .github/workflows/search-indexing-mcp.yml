@@ -42,6 +42,19 @@ jobs:
         run: python -m py_compile src/imperial_plugins/indexing_mcp.py tools/search_indexing_mcp.py tests/test_indexing_mcp.py
       - name: Run MCP offline protocol and adversarial tests
         run: PYTHONPATH=src python -m unittest discover -s tests -p 'test_indexing_mcp.py' -v
+      - name: Audit real published websites through MCP read-only verifier
+        run: |
+          PYTHONPATH=src python - <<'PY'
+          from imperial_plugins.indexing_mcp import audit_public_site
+          for site_id in ("founder", "company"):
+              evidence = audit_public_site(site_id)
+              assert evidence["public_http_audit"] == "PASS"
+              assert evidence["checks"]["public_projects"] == 23
+              assert evidence["google_indexed"] == "UNVERIFIED"
+              print("PUBLIC HTTP PASS:", site_id,
+                    evidence["checks"]["sitemap_url_count"], "sitemap URLs")
+          print("BOUNDARY: not proof of Search Console ownership or Google indexing")
+          PY
       - name: Verify no Google API credentials or write permissions are required
         run: |
           test -f data/search-indexing-public.json
