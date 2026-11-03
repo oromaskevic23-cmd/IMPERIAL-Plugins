@@ -85,6 +85,30 @@ class SubmissionTests(TestCase):
         self.assertEqual(row[1:], ("GOOGLE_SITEMAP_SUBMITTED", 204))
         self.assertNotIn("synthetic-token-not-real", str(row))
 
+    def test_local_audit_ledger_is_hash_linked(self):
+        result = self.call()
+        self.assertEqual(len(result["local_audit_event_sha256"]), 64)
+        gate = self.gate()
+        self.assertTrue(gate.verify_audit_chain())
+        with sqlite3.connect(self.db) as db:
+            count = db.execute("SELECT COUNT(*) FROM submission_events").fetchone()[0]
+        self.assertEqual(count, 2)
+
+    def test_tampering_breaks_local_evidence_chain(self):
+        self.call()
+        with sqlite3.connect(self.db) as db:
+            db.execute("UPDATE submission_events SET event_json='{}' WHERE seq=1")
+        self.assertFalse(self.gate().verify_audit_chain())
+
+    def test_unconfirmed_response_still_records_evidence(self):
+        with self.assertRaises(GoogleAccessError):
+            self.call(send=lambda *_: 403)
+        with sqlite3.connect(self.db) as db:
+            values = db.execute("SELECT event_json FROM submission_events ORDER BY seq").fetchall()
+        self.assertEqual(len(values), 2)
+        self.assertIn("UNCONFIRMED_HTTP", values[1][0])
+        self.assertTrue(self.gate().verify_audit_chain())
+
     def test_default_kill_switch_refuses_without_side_effects(self):
         gate = SubmissionGate(self.db, approval_verifier=lambda *_: True,
                               qa_verifier=lambda *_: True,
