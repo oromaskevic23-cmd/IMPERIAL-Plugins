@@ -41,7 +41,7 @@ Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `Guar
 - **Verified public project registry:** 23 technical/business projects from 25 public repos; 7 private repos explicitly excluded from the snapshot.
 - **Public-site audit:** only two canonical GitHub Pages properties allowed, checking actual HTTP, robots.txt, XML sitemap, canonical and JSON-LD ItemList.
 - **Search Console integration:** exact property/sitemap URLs plus a separate [OAuth-bound, read-only Google API adapter](src/imperial_plugins/search_console_read.py). It can check real property permissions, sitemap registration and Google URL Inspection **only after an independently authorized private host supplies OAuth**. No Google token is present in this repository, and the public MCP never invokes the Google adapter automatically. Submission and actual indexing remain **UNVERIFIED**.
-- **No unauthorized submission:** no Google credentials, write methods, indexing API misuse, payout capability, arbitrary URL fetch or hidden private repository access.
+- **Approval-gated sitemap submission reference:** [SubmissionGate](src/imperial_plugins/search_console_submit.py) now contains an exact Google PUT transport callable **only from a separately authorized private host** after time-limited Owner and independent-QA proof verification, real property access and public sitemap checks. The local kill switch defaults to ON; no Google OAuth or actual submission is connected. [Enterprise release and incident controls](docs/GOOGLE_SEARCH_CONSOLE_APPROVAL_GATEWAY.md). The four public MCP tools remain read-only.
 - **Source:** [indexing_mcp.py](src/imperial_plugins/indexing_mcp.py) · [public-only inventory](data/search-indexing-public.json) · [adversarial tests](tests/test_indexing_mcp.py) · [MCP CI](.github/workflows/search-indexing-mcp.yml).
 - **Operations and connecting a compatible MCP client:** [Complete local integration guide](docs/SEARCH_INDEXING_MCP.md).
 
@@ -57,7 +57,7 @@ Run the tests independently:
 PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_indexing_mcp.py' -v
 ```
 
-This is **source implementation**, not a hosted server or already-installed ChatGPT integration. It does not submit sitemaps, prove Google Search Console ownership, or verify that any project is indexed or ranked by Google.
+This is **source implementation**, not a hosted server or already-installed ChatGPT integration. The public MCP cannot submit sitemaps; the separate guarded write module has only been tested with synthetic Google responses. No real OAuth grant, submission, indexing result or search ranking is verified.
 
 ## Chat History Recovery — Ten Specialized Search NCA (v0.1)
 
