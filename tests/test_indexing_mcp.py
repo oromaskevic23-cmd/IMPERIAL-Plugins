@@ -224,6 +224,33 @@ class Protocol(TestCase):
         del msg["id"]
         self.assertIsNone(s.dispatch(msg))
 
+    def test_actual_stdio_json_rpc_framing(self):
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+
+        root = Path(__file__).resolve().parents[1]
+        init = envelope("initialize", ident=1, args={
+            "protocolVersion": MCP_LEGACY, "capabilities": {},
+            "clientInfo": {"name": "stdio-smoke", "version": "1.0.0"},
+        })
+        old_tools = envelope("tools/list", ident=2)
+        modern = envelope("server/discover", ident=3, modern=True)
+        data = "".join(json.dumps(v) + "\\n" for v in (init, old_tools, modern))
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(root / "src")
+        proc = subprocess.run(
+            [sys.executable, str(root / "tools/search_indexing_mcp.py")],
+            cwd=root, env=env, input=data, capture_output=True, text=True, timeout=10,
+            check=True,
+        )
+        self.assertEqual(proc.stderr, "")
+        rows = [json.loads(line) for line in proc.stdout.splitlines()]
+        self.assertEqual([row["id"] for row in rows], [1, 2, 3])
+        self.assertEqual(len(rows[1]["result"]["tools"]), 4)
+        self.assertEqual(rows[2]["result"]["resultType"], "complete")
+
     def test_invalid_rpc_fails_closed(self):
         s = IndexingMCPServer()
         self.assertEqual(s.dispatch([])["error"]["code"], -32600)
