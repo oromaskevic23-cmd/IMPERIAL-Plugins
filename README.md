@@ -40,7 +40,7 @@ Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `Guar
 
 - **Verified public project registry:** 23 technical/business projects from 25 public repos; 7 private repos explicitly excluded from the snapshot.
 - **Public-site audit:** only two canonical GitHub Pages properties allowed, checking actual HTTP, robots.txt, XML sitemap, canonical and JSON-LD ItemList.
-- **Search Console integration plan:** correct Google property/sitemap URLs, with Google indexing and submission status always reported as **UNVERIFIED** unless separately obtained from Google.
+- **Search Console integration:** exact property/sitemap URLs plus a separate [OAuth-bound, read-only Google API adapter](src/imperial_plugins/search_console_read.py). It can check real property permissions, sitemap registration and Google URL Inspection **only after an independently authorized private host supplies OAuth**. No Google token is present in this repository, and the public MCP never invokes the Google adapter automatically. Submission and actual indexing remain **UNVERIFIED**.
 - **No unauthorized submission:** no Google credentials, write methods, indexing API misuse, payout capability, arbitrary URL fetch or hidden private repository access.
 - **Source:** [indexing_mcp.py](src/imperial_plugins/indexing_mcp.py) · [public-only inventory](data/search-indexing-public.json) · [adversarial tests](tests/test_indexing_mcp.py) · [MCP CI](.github/workflows/search-indexing-mcp.yml).
 - **Operations and connecting a compatible MCP client:** [Complete local integration guide](docs/SEARCH_INDEXING_MCP.md).
