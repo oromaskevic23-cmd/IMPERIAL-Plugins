@@ -237,7 +237,7 @@ class Protocol(TestCase):
         })
         old_tools = envelope("tools/list", ident=2)
         modern = envelope("server/discover", ident=3, modern=True)
-        data = "".join(json.dumps(v) + "\\n" for v in (init, old_tools, modern))
+        data = "".join(json.dumps(v) + chr(10) for v in (init, old_tools, modern))
         env = os.environ.copy()
         env["PYTHONPATH"] = str(root / "src")
         proc = subprocess.run(
