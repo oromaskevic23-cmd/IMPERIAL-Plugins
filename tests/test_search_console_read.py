@@ -122,6 +122,11 @@ class SearchConsoleTests(unittest.TestCase):
         with self.assertRaises(GoogleAccessError):
             request_google("GET", "https://localhost/admin", "dummy-only-never-real")
 
+    def test_google_endpoint_allowlist_rejects_extra_paths(self):
+        for extra_path in ("/unreviewed/sitemaps", "/../sites", "/owner/private"):
+            with self.subTest(extra_path=extra_path), self.assertRaises(GoogleAccessError):
+                request_google("GET", GOOGLE_SITES + extra_path, "dummy-only-never-real")
+
     def test_malformed_google_response_denied(self):
         reader = SearchConsoleReadBridge(
             access_token="dummy-only-never-real",
