@@ -46,7 +46,7 @@ The bridge requires a Google OAuth access token provided only by a trusted priva
 2. Federated orchestrator lease and tenant-scoped Enterprise Skills, bounded to two approved public URL-prefix properties.
 3. Guardian Core, Approval Gateway, Owner Kill Switch and durable Audit Ledger with independent external anchors.
 4. OAuth authorization for both actual Search Console properties, with owner-controlled key storage and rotation.
-5. Independently reviewed submission flow, server-side deduplication and provider-issued receipts.
+5. Integrate the separately implemented, default-deny [SubmissionGate](../src/imperial_plugins/search_console_submit.py) into the trusted private runtime with real cryptographic Owner and independent-QA verifiers, a source-bound Google OAuth token, provider readback and external audit anchoring. Source-level replay protection, short expiry, Google PUT transport, local hash-linked evidence and failure reconciliation states exist and are tested with simulated provider results; they are **not yet production-authorized**.
 6. URL Inspection and Page Indexing evidence from Google; audit distinguishes crawlable pages, submitted sitemap, crawled URL and indexed URL.
 7. Separate functional QA, security review, release signature, rollback and publicly checkable versioned evidence.
 
