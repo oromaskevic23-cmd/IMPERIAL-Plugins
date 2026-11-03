@@ -208,6 +208,78 @@ class SubmissionTests(TestCase):
             state = db.execute("SELECT status FROM submissions").fetchone()[0]
         self.assertEqual(state, "NEEDS_RECONCILIATION")
 
+
+    def test_reconciliation_observes_real_registration_without_resending(self):
+        self.call()
+        fake_entries = [{
+            "path": ALLOWED_SITES["founder"]["sitemap"],
+            "lastSubmitted": "2026-11-03T21:00:00Z",
+        }]
+        self.reader.list_submitted_sitemaps = lambda site: {
+            "site_id": site,
+            "expected_sitemap": ALLOWED_SITES[site]["sitemap"],
+            "found_in_google_account": True,
+            "google_sitemap_entries": fake_entries,
+        }
+        gate = self.gate()
+        result = gate.reconcile("founder", self.reader)
+        self.assertEqual(result["status"], "GOOGLE_SITEMAP_OBSERVED")
+        self.assertEqual(result["google_indexed"], "UNVERIFIED")
+        self.assertEqual(result["new_submission_sent"], False)
+        self.assertEqual(len(self.send_log), 1)
+        self.assertTrue(gate.verify_audit_chain())
+        again = gate.reconcile("founder", self.reader)
+        self.assertEqual(again["status"], "GOOGLE_SITEMAP_OBSERVED")
+        self.assertEqual(len(self.send_log), 1)
+        with sqlite3.connect(self.db) as db:
+            count = db.execute("SELECT COUNT(*) FROM submission_events").fetchone()[0]
+        self.assertEqual(count, 3)
+
+    def test_unknown_outcome_stays_blocked_until_google_observes(self):
+        gate = self.gate()
+        with self.assertRaisesRegex(GoogleAccessError, "OUTCOME_UNKNOWN"):
+            self.call(gate=gate, send=lambda *_: (_ for _ in ()).throw(TimeoutError()))
+        self.reader.list_submitted_sitemaps = lambda site: {
+            "site_id": site,
+            "expected_sitemap": ALLOWED_SITES[site]["sitemap"],
+            "found_in_google_account": False,
+            "google_sitemap_entries": [],
+        }
+        result = gate.reconcile("founder", self.reader)
+        self.assertEqual(result["status"], "REQUIRES_MANUAL_REVIEW_NOT_OBSERVED")
+        self.assertFalse(result["new_submission_sent"])
+        with sqlite3.connect(self.db) as db:
+            state = db.execute("SELECT status FROM submissions").fetchone()[0]
+        self.assertEqual(state, "NEEDS_RECONCILIATION")
+        with self.assertRaisesRegex(GoogleAccessError, "REPLAY_OR_UNKNOWN"):
+            self.call(gate=gate)
+        self.assertFalse(self.send_log)
+
+    def test_reconcile_wrong_site_and_missing_local_operation_denied(self):
+        with self.assertRaisesRegex(GoogleAccessError, "UNREVIEWED_PROPERTY"):
+            self.gate().reconcile("localhost", self.reader)
+        with self.assertRaisesRegex(GoogleAccessError, "UNKNOWN_LOCAL"):
+            self.gate().reconcile("founder", self.reader)
+
+    def test_reconcile_rejects_untrusted_google_result(self):
+        self.call()
+        self.reader.list_submitted_sitemaps = lambda site: {
+            "site_id": "company",
+            "expected_sitemap": ALLOWED_SITES["company"]["sitemap"],
+            "found_in_google_account": True,
+            "google_sitemap_entries": [{"path": ALLOWED_SITES["company"]["sitemap"]}],
+        }
+        with self.assertRaisesRegex(GoogleAccessError, "EVIDENCE_INVALID"):
+            self.gate().reconcile("founder", self.reader)
+        self.assertEqual(len(self.send_log), 1)
+
+    def test_reconciliation_fails_closed_on_tampered_local_audit(self):
+        self.call()
+        with sqlite3.connect(self.db) as db:
+            db.execute("UPDATE submission_events SET event_json='{}' WHERE seq=1")
+        with self.assertRaisesRegex(GoogleAccessError, "AUDIT_CHAIN_TAMPERED"):
+            self.gate().reconcile("founder", self.reader)
+
     def test_submit_transport_rejects_arbitrary_host_and_method(self):
         for method, url in (
             ("POST", GOOGLE_SITES), ("PUT", "http://169.254.169.254/"),
