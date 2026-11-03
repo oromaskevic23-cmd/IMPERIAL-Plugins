@@ -84,7 +84,7 @@ The private production connector must use OAuth with the user's actual Search Co
 1. Verified current GitHub read-only token scope or safe public inventory crawl; detect repo-visibility changes before updating the public registry. Never write private names/paths into publicly exposed telemetry.
 2. Actual local operator-controlled MCP installation, host-level permissions and audit logs.
 3. Independent OAuth connection for both distinct Search Console URL-prefix properties.
-4. Implement, independently review and authorize the separate sitemap submission writer only after real owner approval; the currently implemented Google adapter is **read-only** and provides an exact allowlisted PUT preflight but does not send it.
+4. Independently authorize a private hosted sitemap submission process only after real Owner and QA approvals. The separate [SubmissionGate](../src/imperial_plugins/search_console_submit.py) already implements a guarded and tested allowlisted PUT transport and no-retry reconciliation. It is not an MCP tool; no real OAuth, Google submission or production trust service is connected.
 5. Optional Google Search Console read-only inspection reports and reconciled errors.
 6. Separate sandbox integration, credential isolation, signed releases, rollback and security review.
 7. If ever served over HTTP, implement a production-approved Streamable HTTP transport, Origin checks, authenticated sessions, rate limits and network ACLs. **Do not expose this stdio prototype directly to the public internet**.
