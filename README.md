@@ -45,6 +45,7 @@ Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `Guar
 - **Approval-gated sitemap submission reference:** [SubmissionGate](src/imperial_plugins/search_console_submit.py) now contains an exact Google PUT transport callable **only from a separately authorized private host** after time-limited Owner and independent-QA proof verification, real property access and public sitemap checks. The local kill switch defaults to ON; no Google OAuth or actual submission is connected. [Enterprise release and incident controls](docs/GOOGLE_SEARCH_CONSOLE_APPROVAL_GATEWAY.md). The four public MCP tools remain read-only.
 - **Source:** [indexing_mcp.py](src/imperial_plugins/indexing_mcp.py) · [public-only inventory](data/search-indexing-public.json) · [adversarial tests](tests/test_indexing_mcp.py) · [MCP CI](.github/workflows/search-indexing-mcp.yml).
 - **Operations and connecting a compatible MCP client:** [Complete local integration guide](docs/SEARCH_INDEXING_MCP.md).
+- **Current production checkpoint:** [4 November Google Search Console readiness and independently verified blockers](docs/SEARCH_INDEXING_PRODUCTION_CHECKPOINT_20261104.md) — signed Owner/QA verifier, safe reconciliation, documented OAuth dependency and exact CI evidence.
 
 Start the real MCP stdio process from a local checkout:
 
