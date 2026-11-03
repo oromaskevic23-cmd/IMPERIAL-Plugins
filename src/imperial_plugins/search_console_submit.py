@@ -202,3 +202,79 @@ class SubmissionGate:
             "google_indexed": "UNVERIFIED",
             "evidence": "PROVIDER_HTTP_RESPONSE_NOT_INDEXING",
         }
+
+
+    def reconcile(self, site_id: str, reader: SearchConsoleReadBridge) -> dict:
+        """Inspect Google sitemaps without performing a second PUT.
+
+        Operator-only: after an unknown network outcome, this reads the actual
+        property and its sitemaps. An absent sitemap is not evidence that a
+        preceding PUT failed. Even a present sitemap never proves URL indexing.
+        """
+        if type(site_id) is not str or site_id not in ALLOWED_SITES:
+            raise GoogleAccessError("UNREVIEWED_PROPERTY")
+        if not isinstance(reader, SearchConsoleReadBridge):
+            raise GoogleAccessError("GOOGLE_READER_REQUIRED")
+        if not self.verify_audit_chain():
+            raise GoogleAccessError("AUDIT_CHAIN_TAMPERED")
+        with sqlite3.connect(self.database_path) as db:
+            previous = db.execute(
+                "SELECT operation_id,intent_sha256,status FROM submissions WHERE site_id=?",
+                (site_id,)).fetchone()
+        if not previous:
+            raise GoogleAccessError("UNKNOWN_LOCAL_SUBMISSION")
+        operation_id, digest, old_state = previous
+        if old_state not in ("PREPARED", "NEEDS_RECONCILIATION",
+                             "GOOGLE_SITEMAP_SUBMITTED", "GOOGLE_SITEMAP_OBSERVED"):
+            raise GoogleAccessError("INVALID_LOCAL_SUBMISSION_STATE")
+        info = reader.check_property(site_id)
+        if (not isinstance(info, dict) or
+            info.get("google_permission") not in
+                ("siteOwner", "siteFullUser", "siteRestrictedUser")):
+            raise GoogleAccessError("GOOGLE_PROPERTY_ACCESS_NOT_VERIFIED")
+        observed = reader.list_submitted_sitemaps(site_id)
+        expected = ALLOWED_SITES[site_id]["sitemap"]
+        if (not isinstance(observed, dict)
+            or observed.get("site_id") != site_id
+            or observed.get("expected_sitemap") != expected
+            or type(observed.get("found_in_google_account")) is not bool):
+            raise GoogleAccessError("GOOGLE_SITEMAP_EVIDENCE_INVALID")
+        found = observed["found_in_google_account"]
+        entries = observed.get("google_sitemap_entries")
+        if (not isinstance(entries, list)
+            or (found and not entries)
+            or any(not isinstance(item, dict) or item.get("path") != expected
+                   for item in entries)):
+            raise GoogleAccessError("GOOGLE_SITEMAP_EVIDENCE_INVALID")
+        if not found and entries:
+            raise GoogleAccessError("GOOGLE_SITEMAP_EVIDENCE_INVALID")
+        if found:
+            with sqlite3.connect(self.database_path, timeout=10) as db:
+                db.execute("BEGIN IMMEDIATE")
+                row = db.execute(
+                    "SELECT operation_id,intent_sha256,status FROM submissions WHERE site_id=?",
+                    (site_id,)).fetchone()
+                if row != previous:
+                    raise GoogleAccessError("CONCURRENT_RECONCILIATION_CONFLICT")
+                if old_state != "GOOGLE_SITEMAP_OBSERVED":
+                    db.execute(
+                        "UPDATE submissions SET status='GOOGLE_SITEMAP_OBSERVED' WHERE site_id=?",
+                        (site_id,))
+                    self._record_event(db, "GOOGLE_SITEMAP_OBSERVED",
+                                       operation_id, digest)
+            return {
+                "site_id": site_id,
+                "operation_id": operation_id,
+                "status": "GOOGLE_SITEMAP_OBSERVED",
+                "google_api_registration_seen": True,
+                "google_indexed": "UNVERIFIED",
+                "new_submission_sent": False,
+            }
+        return {
+            "site_id": site_id,
+            "operation_id": operation_id,
+            "status": "REQUIRES_MANUAL_REVIEW_NOT_OBSERVED",
+            "google_api_registration_seen": False,
+            "google_indexed": "UNVERIFIED",
+            "new_submission_sent": False,
+        }
