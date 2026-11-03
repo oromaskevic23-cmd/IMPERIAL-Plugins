@@ -30,6 +30,20 @@ The read-only MCP verifier requested the fixed, approved GitHub Pages endpoints.
 
 For each site, the implementation checked base, project directory, root sitemap and `robots.txt` (four GETs; eight total). Verified only source/published-web correctness. All requests use exact host/path allowlists and refuse redirects.
 
+## Enterprise extension — Google API and HANTER pinned handoff
+
+**Google read connector source:** [search_console_read.py](../src/imperial_plugins/search_console_read.py). Implemented methods: `sites.list` permission verification, `sitemaps.list` exact sitemap lookup, and `urlInspection.index.inspect` for explicitly allowed project pages. It uses strict official Google API destination allowlists, never follows redirects, and never obtains or stores an OAuth credential itself. `sitemap_submission_preflight` produces an exact, **unexecuted** approved-site `PUT` intent. No Google sitemap submission path exists in this code.
+
+**Latest proven CI checkpoint:** https://github.com/oromaskevic23-cmd/IMPERIAL-Plugins/actions/runs/41709474135
+
+- 20 MCP protocol and adversarial tests PASS under Python 3.11 and 3.12.
+- 12 separate Google API adapter tests PASS under Python 3.11 and 3.12, using **fake tokens and mocked Google responses only**.
+- Public site real HTTP audits PASS: 12 founder URLs, 25 company URLs, both 23-project catalogs. This does **not** prove Google indexing.
+
+**HANTER source-level integration:** https://github.com/oromaskevic23-cmd/HANTER-Public/actions/runs/41709759949 — PASS. Its GitHub Actions job checks out an immutable reviewed plugin SHA, launches the MCP locally, and independently tests `initialize`, `tools/list`, `imperial.indexing_status` and `imperial.search_console_plan` over actual stdio JSON-RPC. There was **no NCA dispatch**, OAuth, payment or Google submission.
+
+**Production limits remain:** No connected real user Google Search Console account; no Google token; no authenticated private server or real Owner Ed25519 enrollment; no production federation, append-only remotely anchored audit or externally verified indexing report.
+
 ## What this does not prove
 
 - No currently installed/registered ChatGPT MCP connection.
