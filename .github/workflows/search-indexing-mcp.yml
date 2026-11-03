@@ -5,20 +5,24 @@ on:
     paths:
       - "src/imperial_plugins/indexing_mcp.py"
       - "src/imperial_plugins/search_console_read.py"
+      - "src/imperial_plugins/search_console_submit.py"
       - "data/search-indexing-public.json"
       - "tools/search_indexing_mcp.py"
       - "tests/test_indexing_mcp.py"
       - "tests/test_search_console_read.py"
+      - "tests/test_search_console_submit.py"
       - ".github/workflows/search-indexing-mcp.yml"
   push:
     branches: [main]
     paths:
       - "src/imperial_plugins/indexing_mcp.py"
       - "src/imperial_plugins/search_console_read.py"
+      - "src/imperial_plugins/search_console_submit.py"
       - "data/search-indexing-public.json"
       - "tools/search_indexing_mcp.py"
       - "tests/test_indexing_mcp.py"
       - "tests/test_search_console_read.py"
+      - "tests/test_search_console_submit.py"
       - ".github/workflows/search-indexing-mcp.yml"
   workflow_dispatch:
 
@@ -43,11 +47,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile MCP source, runner and tests
-        run: python -m py_compile src/imperial_plugins/indexing_mcp.py tools/search_indexing_mcp.py tests/test_indexing_mcp.py
+        run: python -m py_compile src/imperial_plugins/indexing_mcp.py src/imperial_plugins/search_console_read.py src/imperial_plugins/search_console_submit.py tools/search_indexing_mcp.py tests/test_indexing_mcp.py tests/test_search_console_read.py tests/test_search_console_submit.py
       - name: Run MCP offline protocol and adversarial tests
         run: PYTHONPATH=src python -m unittest discover -s tests -p 'test_indexing_mcp.py' -v
       - name: Google Search Console read tests
         run: PYTHONPATH=src python -m unittest discover -s tests -p 'test_search_console_read.py' -v
+      - name: Google Search Console guarded submission tests (simulated)
+        run: PYTHONPATH=src python -m unittest discover -s tests -p 'test_search_console_submit.py' -v
       - name: Audit real published websites through MCP read-only verifier
         run: |
           PYTHONPATH=src python - <<'PY'
