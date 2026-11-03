@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+import hmac
 import json
 import os
 import re
@@ -90,6 +91,36 @@ class SubmissionGate:
                 status TEXT NOT NULL,
                 provider_http_status INTEGER
             )""")
+            db.execute("""CREATE TABLE IF NOT EXISTS submission_events(
+                seq INTEGER PRIMARY KEY AUTOINCREMENT,
+                previous_sha256 TEXT NOT NULL,
+                event_json TEXT NOT NULL,
+                event_sha256 TEXT NOT NULL
+            )""")
+
+    @staticmethod
+    def _record_event(db: sqlite3.Connection, kind: str, operation_id: str,
+                      digest: str, provider_code: int | None = None) -> str:
+        event = {"kind": kind, "operation_id": operation_id,
+                 "intent_sha256": digest, "provider_code": provider_code}
+        payload = json.dumps(event, sort_keys=True, separators=(",", ":"))
+        last = db.execute("SELECT event_sha256 FROM submission_events ORDER BY seq DESC LIMIT 1").fetchone()
+        prior = last[0] if last else "0" * 64
+        event_sha256 = hashlib.sha256((prior + payload).encode()).hexdigest()
+        db.execute("INSERT INTO submission_events(previous_sha256,event_json,event_sha256) VALUES(?,?,?)",
+                   (prior, payload, event_sha256))
+        return event_sha256
+
+    def verify_audit_chain(self) -> bool:
+        with sqlite3.connect(self.database_path) as db:
+            events = db.execute("SELECT seq,previous_sha256,event_json,event_sha256 FROM submission_events ORDER BY seq").fetchall()
+        prior = "0" * 64
+        for index, (seq, link, event, digest) in enumerate(events, start=1):
+            calc = hashlib.sha256((prior + event).encode()).hexdigest()
+            if seq != index or link != prior or not hmac.compare_digest(calc, digest):
+                return False
+            prior = digest
+        return True
 
     def submit(self, intent: SitemapIntent, reader: SearchConsoleReadBridge,
                *, send: Callable[[str, str, str], int] | None = None,
@@ -141,6 +172,7 @@ class SubmissionGate:
                 raise GoogleAccessError("REPLAY_OR_UNKNOWN_OUTCOME_REQUIRES_RECONCILIATION")
             db.execute("INSERT INTO submissions VALUES (?,?,?,?,NULL)",
                        (intent.operation_id, intent.site_id, digest, "PREPARED"))
+            self._record_event(db, "PREPARED", intent.operation_id, digest)
             db.commit()
         try:
             status = send("PUT", endpoint, reader._token)
@@ -148,6 +180,7 @@ class SubmissionGate:
             with sqlite3.connect(self.database_path) as db:
                 db.execute("UPDATE submissions SET status='NEEDS_RECONCILIATION' WHERE operation_id=?",
                            (intent.operation_id,))
+                self._record_event(db, "UNKNOWN_OUTCOME", intent.operation_id, digest)
             raise GoogleAccessError("SUBMISSION_OUTCOME_UNKNOWN") from None
         if type(status) is not int or status not in (200, 204):
             with sqlite3.connect(self.database_path) as db:
@@ -157,12 +190,14 @@ class SubmissionGate:
         with sqlite3.connect(self.database_path) as db:
             db.execute("UPDATE submissions SET status='GOOGLE_SITEMAP_SUBMITTED', provider_http_status=? WHERE operation_id=?",
                        (status, intent.operation_id))
+            event_sha256 = self._record_event(db, "GOOGLE_ACCEPTED_SUBMISSION", intent.operation_id, digest, status)
         return {
             "status": "GOOGLE_SITEMAP_SUBMITTED",
             "site_id": intent.site_id,
             "sitemap": site["sitemap"],
             "operation_id": intent.operation_id,
             "google_http_status": status,
+            "local_audit_event_sha256": event_sha256,
             "google_indexed": "UNVERIFIED",
             "evidence": "PROVIDER_HTTP_RESPONSE_NOT_INDEXING",
         }
