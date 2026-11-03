@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
+import os
+import time
 from pathlib import Path
 import sqlite3
 from typing import Callable
@@ -25,6 +27,8 @@ class SitemapIntent:
     owner_proof_ref: str
     qa_proof_ref: str
     policy_version: str
+    issued_at: int
+    expires_at: int
 
     def canonical(self) -> bytes:
         return json.dumps(self.__dict__, sort_keys=True, separators=(",", ":")).encode()
@@ -34,20 +38,27 @@ class SubmissionGate:
     """Local fail-closed reference. Host must supply its own trusted verifier."""
 
     def __init__(self, database_path: str | Path, *,
-                 approval_verifier: Callable[[bytes, str], bool] | None = None):
+                 approval_verifier: Callable[[bytes, str], bool] | None = None,
+                 qa_verifier: Callable[[bytes, str], bool] | None = None,
+                 kill_switch: bool = True):
         self.database_path = str(database_path)
         self.approval_verifier = approval_verifier
+        self.qa_verifier = qa_verifier
+        self.kill_switch = kill_switch
         with sqlite3.connect(self.database_path) as db:
             db.execute("""CREATE TABLE IF NOT EXISTS submissions(
                 operation_id TEXT PRIMARY KEY,
-                site_id TEXT NOT NULL,
+                site_id TEXT NOT NULL UNIQUE,
                 intent_sha256 TEXT NOT NULL,
                 status TEXT NOT NULL,
                 provider_http_status INTEGER
             )""")
 
     def submit(self, intent: SitemapIntent, reader: SearchConsoleReadBridge,
-               *, send: Callable[[str, str, str], int] | None = None) -> dict:
+               *, send: Callable[[str, str, str], int] | None = None,
+               now: int | None = None) -> dict:
+        if self.kill_switch or os.environ.get("IMPERIAL_OWNER_KILL_SWITCH", "1") != "0":
+            raise GoogleAccessError("OWNER_KILL_SWITCH")
         if not isinstance(intent, SitemapIntent):
             raise GoogleAccessError("INVALID_INTENT")
         if intent.site_id not in ALLOWED_SITES:
@@ -56,9 +67,18 @@ class SubmissionGate:
                       intent.qa_proof_ref, intent.policy_version):
             if not isinstance(value, str) or not 3 <= len(value) <= 128:
                 raise GoogleAccessError("INCOMPLETE_APPROVAL_EVIDENCE")
+        clock = int(time.time()) if now is None else now
+        if (type(intent.issued_at) is not int or type(intent.expires_at) is not int
+            or type(clock) is not int or intent.issued_at > clock + 30
+            or intent.expires_at <= clock
+            or intent.expires_at - intent.issued_at > 600):
+            raise GoogleAccessError("PERMIT_EXPIRED_OR_INVALID")
         if (self.approval_verifier is None or
             self.approval_verifier(intent.canonical(), intent.owner_proof_ref) is not True):
             raise GoogleAccessError("OWNER_APPROVAL_NOT_VERIFIED")
+        if (self.qa_verifier is None or
+            self.qa_verifier(intent.canonical(), intent.qa_proof_ref) is not True):
+            raise GoogleAccessError("INDEPENDENT_QA_NOT_VERIFIED")
         if not isinstance(reader, SearchConsoleReadBridge):
             raise GoogleAccessError("GOOGLE_READER_REQUIRED")
         info = reader.check_property(intent.site_id)
@@ -71,8 +91,8 @@ class SubmissionGate:
         digest = hashlib.sha256(intent.canonical()).hexdigest()
         with sqlite3.connect(self.database_path, timeout=10) as db:
             db.execute("BEGIN IMMEDIATE")
-            previous = db.execute("SELECT status FROM submissions WHERE operation_id=?",
-                                  (intent.operation_id,)).fetchone()
+            previous = db.execute("SELECT status FROM submissions WHERE operation_id=? OR site_id=?",
+                                  (intent.operation_id, intent.site_id)).fetchone()
             if previous is not None:
                 raise GoogleAccessError("REPLAY_OR_UNKNOWN_OUTCOME_REQUIRES_RECONCILIATION")
             db.execute("INSERT INTO submissions VALUES (?,?,?,?,NULL)",
