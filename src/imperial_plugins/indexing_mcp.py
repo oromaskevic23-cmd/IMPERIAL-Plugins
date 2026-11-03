@@ -31,6 +31,21 @@ MANIFEST = Path(__file__).resolve().parents[2] / "data" / "search-indexing-publi
 MAX_BYTES = 1_200_000
 MAX_RPC_BYTES = 131_072
 
+ALLOWED_SITES = {
+    "founder": {
+        "base": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/",
+        "catalog": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/projects/",
+        "sitemap": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/sitemap.xml",
+        "robots": "https://oromaskevic23-cmd.github.io/oromaskevic23-cmd/robots.txt",
+    },
+    "company": {
+        "base": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/",
+        "catalog": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/reference/projects/",
+        "sitemap": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/sitemap.xml",
+        "robots": "https://oromaskevic23-cmd.github.io/Capital-Core-Public/robots.txt",
+    },
+}
+
 
 class AuditError(ValueError):
     """Public site check was rejected or failed; never convert to Google PASS."""
@@ -69,6 +84,8 @@ class _PageParser(HTMLParser):
 
 def read_manifest() -> dict[str, Any]:
     result = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    if result.get("sites") != ALLOWED_SITES:
+        raise AuditError("untrusted site URL registry: network destinations are immutable")
     projects = result.get("projects", [])
     if len(projects) != 23 or len({p["url"] for p in projects}) != 23:
         raise AuditError("invalid or drifted public project snapshot")
