@@ -1,0 +1,18 @@
+name: Provider Acceptable Use Gate
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  provider-relay-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source (pinned)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Provider relay guard self-tests
+        run: python3 security/provider_quota_relay_gate.py --self-test
+      - name: Scan tracked implementation code
+        run: python3 security/provider_quota_relay_gate.py .
