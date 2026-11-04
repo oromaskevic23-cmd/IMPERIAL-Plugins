@@ -5,18 +5,22 @@ on:
     paths:
       - "src/imperial_plugins/public_inventory.py"
       - "src/imperial_plugins/effective_robots.py"
+      - "src/imperial_plugins/seo_nca_exam.py"
       - "data/search-indexing-public.json"
       - "tests/test_public_inventory.py"
       - "tests/test_effective_robots.py"
+      - "tests/test_seo_nca_exam.py"
       - ".github/workflows/public-discoverability.yml"
   push:
     branches: [main]
     paths:
       - "src/imperial_plugins/public_inventory.py"
       - "src/imperial_plugins/effective_robots.py"
+      - "src/imperial_plugins/seo_nca_exam.py"
       - "data/search-indexing-public.json"
       - "tests/test_public_inventory.py"
       - "tests/test_effective_robots.py"
+      - "tests/test_seo_nca_exam.py"
       - ".github/workflows/public-discoverability.yml"
   workflow_dispatch:
 
@@ -37,11 +41,13 @@ jobs:
         with:
           python-version: "3.11"
       - name: Compile source and test modules
-        run: python -m py_compile src/imperial_plugins/public_inventory.py src/imperial_plugins/effective_robots.py tests/test_public_inventory.py tests/test_effective_robots.py
+        run: python -m py_compile src/imperial_plugins/public_inventory.py src/imperial_plugins/effective_robots.py tests/test_public_inventory.py tests/test_effective_robots.py src/imperial_plugins/seo_nca_exam.py tests/test_seo_nca_exam.py
       - name: Test public/private boundary without network
         run: PYTHONPATH=src python -m unittest discover -s tests -p "test_public_inventory.py" -v
       - name: Test robots URL semantics without network
         run: PYTHONPATH=src python -m unittest discover -s tests -p "test_effective_robots.py" -v
+      - name: Test public SEO-NCA qualification simulations
+        run: PYTHONPATH=src python -m unittest discover -s tests -p "test_seo_nca_exam.py" -v
       - name: Verify actual GitHub public repository registry (no private names)
         run: PYTHONPATH=src python -m imperial_plugins.public_inventory --live
       - name: Verify effective root-host robots instead of project-path robots
