@@ -1,0 +1,50 @@
+name: IMPERIAL Public Inventory and Effective Robots Gate
+
+on:
+  pull_request:
+    paths:
+      - "src/imperial_plugins/public_inventory.py"
+      - "src/imperial_plugins/effective_robots.py"
+      - "data/search-indexing-public.json"
+      - "tests/test_public_inventory.py"
+      - "tests/test_effective_robots.py"
+      - ".github/workflows/public-discoverability.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/imperial_plugins/public_inventory.py"
+      - "src/imperial_plugins/effective_robots.py"
+      - "data/search-indexing-public.json"
+      - "tests/test_public_inventory.py"
+      - "tests/test_effective_robots.py"
+      - ".github/workflows/public-discoverability.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-inventory-and-host-robots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout without persisted Git credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Compile source and test modules
+        run: python -m py_compile src/imperial_plugins/public_inventory.py src/imperial_plugins/effective_robots.py tests/test_public_inventory.py tests/test_effective_robots.py
+      - name: Test public/private boundary without network
+        run: PYTHONPATH=src python -m unittest discover -s tests -p "test_public_inventory.py" -v
+      - name: Test robots URL semantics without network
+        run: PYTHONPATH=src python -m unittest discover -s tests -p "test_effective_robots.py" -v
+      - name: Verify actual GitHub public repository registry (no private names)
+        run: PYTHONPATH=src python -m imperial_plugins.public_inventory --live
+      - name: Verify effective root-host robots instead of project-path robots
+        run: PYTHONPATH=src python -m imperial_plugins.effective_robots --live
+      - name: Preserve Google evidence boundary
+        run: echo "BOUNDARY - public inventory and host robots PASS do not prove Google indexing or Search Console ownership"
