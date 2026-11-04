@@ -34,6 +34,17 @@ python3 -m unittest discover -s plugins/audit-ledger -p 'test_*.py' -v
 
 Integration API: `imperial_plugins.core.validate_manifest`, `sign_claims`, `GuardianCore.evaluate`, and `AuditLedger`. Signing helpers are for trusted backend/issuer code, **never for untrusted plugins**. Cryptographic authentication here uses a **shared-secret HMAC**, not the future asymmetric AI Passport/Ed25519 issuance infrastructure.
 
+## Public Discoverability Gate and SEO-NCA Practice (2026-11-04)
+
+A separate **evidence-driven Enterprise discoverability control** is now working in GitHub Actions: it reconciles the current GitHub public repository list with the reviewed 23-project portfolio, checks the actual **host-root** robots policy (not incorrectly treating project-path files as effective crawler policy), and grades 14 deliberately public SEO-NCA safety exercises. **No OAuth, Google indexing, model training or agent dispatch is claimed.**
+
+- [Complete verified engineering report](docs/PUBLIC_DISCOVERABILITY_ENTERPRISE_20261104.md)
+- [Public inventory guard](src/imperial_plugins/public_inventory.py) · [effective robots checker](src/imperial_plugins/effective_robots.py) · [SEO-NCA practice examiner](src/imperial_plugins/seo_nca_exam.py)
+- [GitHub Actions PASS (7 inventory + 6 robots + 10 exam tests; live public API and host-root HTTP)](https://github.com/oromaskevic23-cmd/IMPERIAL-Plugins/actions/runs/41751283283)
+- [Founder source tree and actual six public HTTP endpoints PASS](https://github.com/oromaskevic23-cmd/oromaskevic23-cmd/actions/runs/41750707801)
+
+Source-of-truth categories: **25 public repositories**, of which **23** are promoted engineering projects and **2** are non-project public repositories. This does not imply that all projects are deployed products. Seven other repositories remain private; the public checker does not display or ingest their names.
+
 ## IMPERIAL Search Indexing MCP — protocol server v0.1 (2026-11-03)
 
 **A runnable, read-only local MCP server has been implemented and added to the enterprise test suite.** It exposes four indexing tools using both modern **MCP 2026-07-28** discovery and legacy **MCP 2025-11-25** initialization, through a newline-delimited JSON-RPC stdio process.
