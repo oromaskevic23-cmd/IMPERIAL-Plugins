@@ -46,12 +46,13 @@ def _public_url(value: object, allowed_hosts: frozenset[str]) -> str:
     try:
         parsed = urlsplit(value)
         hostname = parsed.hostname or ""
+        port = parsed.port
     except ValueError as exc:
         raise ProviderRequestDenied("URL_INVALID") from exc
     host = hostname.lower().rstrip(".")
     if (parsed.scheme != "https" or not host or not _HOST.fullmatch(host)
         or host not in allowed_hosts or parsed.username or parsed.password
-        or parsed.port not in (None, 443) or parsed.fragment):
+        or port not in (None, 443) or parsed.fragment):
         raise ProviderRequestDenied("PUBLIC_URL_SCOPE_DENIED")
     try:
         ipaddress.ip_address(host)
@@ -150,7 +151,7 @@ def prepare_provider_action(action: str, arguments: dict,
             raise ProviderRequestDenied("ANALYTICS_PROPERTIES_DENIED")
         return _plan(action, f"https://{posthog_region}.i.posthog.com/i/v0/e/",
                      {"event": event, "distinct_id": identifier,
-                      "properties": props}, billable=False)
+                      "properties": props}, billable=True)
     if action == "playwright.e2e":
         if arguments != {"suite": "constructor-browser-acceptance"}:
             raise ProviderRequestDenied("BROWSER_SUITE_NOT_APPROVED")
