@@ -149,3 +149,9 @@ from a passing Skill review or from a shared-secret HMAC demonstration.
 The real Owner key, AI Passport, independent professional QA and actual NCA
 worker require separate evidence and approval.
 
+
+## Governed Composio read-only integration boundary (6 November 2026)
+
+A functional, **locally tested** [Composio transport guard](src/imperial_plugins/composio_guard.py) now enforces exact approved tool/toolkit scope, separate trusted-host Passport and Owner-permit verification, replay-resistant request IDs, bounded JSON, Owner Kill Switch checks and hash-chained audit receipts for injected **read-only** provider calls. It does not use or copy any third-party repository.
+
+See [implementation and deployment gates](docs/COMPOSIO_GOVERNED_MCP.md) and [adversarial tests](tests/test_composio_guard.py). This is a working local adapter, **not** a Composio OAuth connection, production MCP service, independently signed credential or authorized NCA fleet. All external writes remain unavailable, and any production integration requires real cryptographic permits and explicit Owner-controlled provider credentials.
