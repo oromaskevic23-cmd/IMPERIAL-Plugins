@@ -49,6 +49,9 @@ VELION is the model fabric, with MAX as a mode. ORION advises; it does not grant
 6. A genuine successful invocation of the **injected tool-specific transport callback** produces a result hash and a hash-chained audit receipt.
 7. No write, send, purchase, delete, publish, permission change or arbitrary batch tool can be granted through this adapter.
 8. No external credential, Composio SDK or network invocation is imported in the package itself.
+9. The transport receives a JSON snapshot bound to the authorized request digest. The host's Passport and Owner verifiers are called again immediately before transport and after the read, and expiry is checked using the current clock after verification. A revoked or expired result is not returned as accepted. Unknown kill-switch state and a backward clock fail closed.
+
+Verifier callbacks must be safe to call repeatedly for the same request: replay is reserved by the adapter's SQLite store, not consumed anew by each verification. These checks are **not** an atomic distributed revocation protocol: a state change can race the final check, a provider read already started cannot be undone, and an untrusted transport cannot be made safe by this adapter alone.
 
 ## Provider setup — NOT accomplished by this commit
 

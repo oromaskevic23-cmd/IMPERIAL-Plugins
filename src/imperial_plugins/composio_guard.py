@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 import sqlite3
 import time
@@ -119,6 +120,42 @@ class GovernedComposioRead:
         if claims.get("capability") != "read:public":
             raise ComposioDenied("CAPABILITY_DENIED")
 
+    def _check_stop(self) -> None:
+        try:
+            state = self.kill_switch()
+        except Exception as exc:
+            raise ComposioDenied("KILL_SWITCH_UNAVAILABLE") from exc
+        if type(state) is not bool:
+            raise ComposioDenied("KILL_SWITCH_STATE_INVALID")
+        if state:
+            raise ComposioDenied("OWNER_KILL_SWITCH")
+
+    def _authorize(self, digest: str, passport_token: object, permit_token: object,
+                   shared: dict, body: dict, *, minimum_time: int = 0) -> int:
+        """Reverify both credentials and check time after the callbacks return."""
+        try:
+            passport = self.verify_passport(digest, passport_token)
+            if not isinstance(passport, dict):
+                raise ComposioDenied("INDEPENDENT_AUTH_REQUIRED")
+            permit = self.verify_owner_permit(digest, permit_token)
+            measured = self.clock()
+            if (type(measured) not in (int, float) or not math.isfinite(measured)
+                    or measured < 0):
+                raise ComposioDenied("CLOCK_INVALID")
+            now = int(measured)
+            if now < minimum_time:
+                raise ComposioDenied("CLOCK_MOVED_BACKWARDS")
+            self._check_claims(passport, shared, now)
+            self._check_claims(permit, {
+                **shared, "request_hash": digest, "request_id": body["request_id"],
+                "tool_slug": body["tool_slug"], "toolkit": body["toolkit"],
+            }, now)
+            return now
+        except ComposioDenied:
+            raise
+        except Exception as exc:
+            raise ComposioDenied("AUTH_VERIFIER_UNAVAILABLE") from exc
+
     def _reserve(self, tenant: str, request_id: str, digest: str, now: int) -> None:
         # BEGIN IMMEDIATE and PRIMARY KEY give durable, cross-process anti-replay.
         with sqlite3.connect(self.db_path, timeout=10, isolation_level=None) as db:
@@ -142,63 +179,62 @@ class GovernedComposioRead:
             )
 
     def execute(self, envelope: object) -> dict:
-        if self.kill_switch():
-            raise ComposioDenied("OWNER_KILL_SWITCH")
-        if not isinstance(envelope, dict) or set(envelope) != {
+        self._check_stop()
+        if type(envelope) is not dict or set(envelope) != {
             "schema", "tenant_id", "orchestrator_id", "agent_id", "task_id",
             "request_id", "tool_slug", "toolkit", "arguments",
             "passport_token", "owner_permit_token",
         }:
             raise ComposioDenied("REQUEST_SCHEMA_DENIED")
-        if envelope["schema"] != SCHEMA:
+        passport_token = envelope["passport_token"]
+        permit_token = envelope["owner_permit_token"]
+        raw = _json_bytes({
+            k: v for k, v in envelope.items()
+            if k not in ("passport_token", "owner_permit_token")
+        }, MAX_REQUEST_BYTES)
+        # Execute only the detached JSON snapshot whose digest is signed.
+        # Later caller or verifier mutations of the original envelope do not
+        # change the arguments sent to the transport.
+        body = json.loads(raw)
+        if body["schema"] != SCHEMA:
             raise ComposioDenied("REQUEST_SCHEMA_DENIED")
         for field in ("tenant_id", "orchestrator_id", "agent_id", "task_id", "request_id"):
-            value = envelope[field]
+            value = body[field]
             if type(value) is not str or IDENT.fullmatch(value) is None:
                 raise ComposioDenied("IDENTITY_INVALID")
-        tool_slug = envelope["tool_slug"]
-        toolkit = envelope["toolkit"]
+        tool_slug = body["tool_slug"]
+        toolkit = body["toolkit"]
         if (type(tool_slug) is not str or tool_slug not in self.allowlist
             or toolkit != self.allowlist[tool_slug]):
             raise ComposioDenied("UNREVIEWED_TOOL_DENIED")
-        args = envelope["arguments"]
+        args = body["arguments"]
         if type(args) is not dict or _contains_secret_fields(args):
             raise ComposioDenied("PRIVATE_BOUNDARY_DENIED")
-        body = {
-            k: v for k, v in envelope.items()
-            if k not in ("passport_token", "owner_permit_token")
-        }
-        raw = _json_bytes(body, MAX_REQUEST_BYTES)
         digest = hashlib.sha256(raw).hexdigest()
-        now = int(self.clock())
         shared = {key: body[key] for key in (
             "tenant_id", "orchestrator_id", "agent_id", "task_id"
         )}
-        try:
-            passport = self.verify_passport(digest, envelope["passport_token"])
-            self._check_claims(passport, shared, now)
-            permit = self.verify_owner_permit(digest, envelope["owner_permit_token"])
-            self._check_claims(permit, {
-                **shared, "request_hash": digest, "request_id": body["request_id"],
-                "tool_slug": tool_slug, "toolkit": toolkit,
-            }, now)
-        except ComposioDenied:
-            raise
-        except Exception as exc:
-            raise ComposioDenied("AUTH_VERIFIER_UNAVAILABLE") from exc
-
-        if self.kill_switch():
-            raise ComposioDenied("OWNER_KILL_SWITCH")
+        now = self._authorize(digest, passport_token, permit_token, shared, body)
+        self._check_stop()
         self._reserve(body["tenant_id"], body["request_id"], digest, now)
         try:
             # The injected transport is responsible for hosting, OAuth and
             # proving this exact reviewed slug is read-only for PUBLIC data.
-            if self.kill_switch():
-                raise ComposioDenied("OWNER_KILL_SWITCH")
+            self._check_stop()
+            execution_time = self._authorize(
+                digest, passport_token, permit_token, shared, body,
+                minimum_time=now,
+            )
+            self._check_stop()
             result = self.read_tool(tool_slug, args)
             result_raw = _json_bytes(result, MAX_RESULT_BYTES)
-            if self.kill_switch():
-                raise ComposioDenied("OWNER_KILL_SWITCH")
+            result = json.loads(result_raw)
+            self._check_stop()
+            self._authorize(
+                digest, passport_token, permit_token, shared, body,
+                minimum_time=execution_time,
+            )
+            self._check_stop()
             result_hash = hashlib.sha256(result_raw).hexdigest()
             evidence = {
                 "schema": "imperial.composio.read-receipt.v1",

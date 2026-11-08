@@ -156,6 +156,75 @@ class GovernedComposioTests(unittest.TestCase):
         self.gate = self.build()
         self.denied(self.request(), "PERMIT_SCOPE_DENIED")
 
+    def test_verifier_cannot_change_signed_transport_arguments(self):
+        request = self.request()
+        original = self.permit
+        def mutate_input(digest, token):
+            request["arguments"]["repo"] = "other/private"
+            return original(digest, token)
+        self.permit = mutate_input
+        self.gate = self.build()
+        self.gate.execute(request)
+        self.assertEqual(self.calls[0][1]["repo"], "owner/public")
+
+    def test_expired_while_verifying_is_denied_before_transport(self):
+        ticks = iter((1000, 1050))
+        self.gate.clock = lambda: next(ticks)
+        with self.assertRaisesRegex(ComposioDenied, "PERMIT_EXPIRED"):
+            self.gate.execute(self.request())
+        self.assertEqual(self.calls, [])
+        with sqlite3.connect(self.path) as db:
+            self.assertEqual(db.execute(
+                "SELECT status FROM composio_requests"
+            ).fetchone()[0], "FAILED_CLOSED")
+
+    def test_revocation_after_reservation_prevents_transport(self):
+        original = self.permit
+        checks = []
+        def revoke_after_admission(digest, token):
+            checks.append(1)
+            return original(digest, token) if len(checks) == 1 else None
+        self.permit = revoke_after_admission
+        self.gate = self.build()
+        with self.assertRaisesRegex(ComposioDenied, "INDEPENDENT_AUTH_REQUIRED"):
+            self.gate.execute(self.request())
+        self.assertEqual(self.calls, [])
+
+    def test_expiry_during_transport_prevents_result_acceptance(self):
+        ticks = iter((1000, 1001, 1050))
+        self.gate.clock = lambda: next(ticks)
+        with self.assertRaisesRegex(ComposioDenied, "PERMIT_EXPIRED"):
+            self.gate.execute(self.request())
+        self.assertEqual(len(self.calls), 1)
+        with sqlite3.connect(self.path) as db:
+            self.assertEqual(db.execute(
+                "SELECT status FROM composio_requests"
+            ).fetchone()[0], "FAILED_CLOSED")
+
+    def test_indeterminate_kill_switch_fails_closed(self):
+        for state in (None, 0, "false"):
+            with self.subTest(state=state):
+                self.gate.kill_switch = lambda: state
+                self.denied(self.request(), "KILL_SWITCH_STATE_INVALID")
+
+    def test_clock_rollback_fails_closed_before_transport(self):
+        ticks = iter((1000, 999))
+        self.gate.clock = lambda: next(ticks)
+        with self.assertRaisesRegex(ComposioDenied, "CLOCK_MOVED_BACKWARDS"):
+            self.gate.execute(self.request())
+        self.assertEqual(self.calls, [])
+
+    def test_missing_stop_state_after_reservation_blocks_transport(self):
+        states = iter((False, False, None))
+        self.gate.kill_switch = lambda: next(states)
+        with self.assertRaisesRegex(ComposioDenied, "KILL_SWITCH_STATE_INVALID"):
+            self.gate.execute(self.request())
+        self.assertEqual(self.calls, [])
+        with sqlite3.connect(self.path) as db:
+            self.assertEqual(db.execute(
+                "SELECT status FROM composio_requests"
+            ).fetchone()[0], "FAILED_CLOSED")
+
     def test_replay_denied_across_gateway_restart(self):
         self.gate.execute(self.request())
         second = self.build()
