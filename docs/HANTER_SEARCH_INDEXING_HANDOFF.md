@@ -1,7 +1,7 @@
 # HANTER → Federated Search Orchestrator → Search Indexing MCP
 
 **Date:** 2026-11-03  
-**Founder and Chief Systems Architect:** Alexander Nikolaevich Romaskevich (RomaskevicH).  
+**Founder, Owner and CEO:** Alexander Nikolaevich Romaskevich (RomaskevicH).  
 **State:** E1 — real cross-repository MCP **source-level contract passed**; private runtime integration NOT established.
 
 ## Verified integration

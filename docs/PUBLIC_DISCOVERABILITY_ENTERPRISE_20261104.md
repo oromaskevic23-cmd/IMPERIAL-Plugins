@@ -1,7 +1,7 @@
 # IMPERIAL Core — Public Discoverability Enterprise Gate
 ## Verified baseline, source control, SEO-NCA preparation — 2026-11-04
 
-**Founder, Owner, CEO, Chief Systems Architect / final authority:** Alexander Nikolaevich Romaskevich (RomaskevicH).  
+**Founder, Owner, CEO / final authority:** Alexander Nikolaevich Romaskevich (RomaskevicH).  
 **Release category:** E1 — public source, GitHub Actions and live public HTTP evidence. This is neither a deployed Google Search Console integration nor proof of Google's indexed URLs.
 
 ## Executive verdict

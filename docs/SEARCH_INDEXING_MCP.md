@@ -1,6 +1,6 @@
 # IMPERIAL Search Indexing MCP — Enterprise reference v0.1
 
-**Founding Architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO • Chief Systems Architect of IMPERIAL Core.
+**Founding Architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO of IMPERIAL Core.
 
 **Implementation state:** Runnable **read-only local MCP stdio server**, with actual JSON-RPC tool discovery/calls. Real public website checks are supported on demand. This is not a hosted, registered or connected ChatGPT plugin and does **not** claim Google indexation. No Google account, Google Contacts, Search Console authorization or OAuth session is attached to this server.
 

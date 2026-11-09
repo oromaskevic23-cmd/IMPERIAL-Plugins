@@ -1,6 +1,6 @@
 # VELION Training Adapter × LLaMA-Factory
 
-**Checkpoint:** 2026-11-01. **Founder • Owner • CEO • Chief Systems Architect:** Alexander Nikolaevich Romaskevich (RomaskevicH).
+**Checkpoint:** 2026-11-01. **Founder • Owner • CEO:** Alexander Nikolaevich Romaskevich (RomaskevicH).
 
 **Verified status: Python offline adapter + GitHub CI. NOT trained, deployed or independently model-benchmarked.**
 

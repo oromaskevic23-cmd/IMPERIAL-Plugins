@@ -1,7 +1,7 @@
 # IMPERIAL Chat History Recovery — Ten Specialized Search Agents
 
 **Plugin:** `imperial.chat-history-recovery` v0.1.0  
-**Founding architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder · Owner · CEO · Chief Systems Architect of IMPERIAL Core.  
+**Founding architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder · Owner · CEO of IMPERIAL Core.  
 **Status:** executable offline source reference, tested on synthetic data. NOT a ChatGPT account connector, enterprise production service, or 10 deployed LLM agents.
 
 ## Mission

@@ -2,7 +2,7 @@
 
 **Checkpoint:** 2026-11-04 (Europe/Kyiv)  
 **Release:** Search Indexing MCP / Search Console protected submission reference  
-**Authority:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO • Chief Systems Architect, Final Architectural Decision Authority  
+**Authority:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO, Final Architectural Decision Authority  
 **Classification:** VERIFIED SOURCE / VERIFIED LOCAL PROTOCOL / VERIFIED SIMULATED CRYPTOGRAPHIC APPROVAL / **GOOGLE PRODUCTION NOT CONNECTED**
 
 ## Executive decision

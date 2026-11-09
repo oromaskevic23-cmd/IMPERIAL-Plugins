@@ -1,6 +1,6 @@
 # IMPERIAL Search Indexing MCP — Google Search Console Approval Gateway
 
-**Architecture authority:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO • Chief Systems Architect of IMPERIAL Core.  
+**Architecture authority:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO of IMPERIAL Core.  
 **Checkpoint:** 2026-11-04.  
 **Implementation classification:** Local Python reference implementation + simulated provider-response tests. **NOT CONNECTED to an authenticated Google account and NOT DEPLOYED as a public MCP service.**
 

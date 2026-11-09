@@ -1,7 +1,7 @@
 # IMPERIAL Core — Search Indexing MCP × Google Search Console Release Evidence
 
 **Checkpoint:** 2026-11-04  
-**Founding architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO • Chief Systems Architect.  
+**Founding architect:** Alexander Nikolaevich Romaskevich (RomaskevicH), Founder • Owner • CEO.  
 **Current evidence tier:** **E1 — TESTED SOURCE / CROSS-REPO CONTRACT**, not an authenticated production Google or HANTER integration.
 
 ## Completed engineering work
