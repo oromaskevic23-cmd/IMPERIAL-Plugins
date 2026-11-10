@@ -157,3 +157,9 @@ worker require separate evidence and approval.
 A functional, **locally tested** [Composio transport guard](src/imperial_plugins/composio_guard.py) now enforces exact approved tool/toolkit scope, separate trusted-host Passport and Owner-permit verification, replay-resistant request IDs, bounded JSON, Owner Kill Switch checks and hash-chained audit receipts for injected **read-only** provider calls. It does not use or copy any third-party repository.
 
 See [implementation and deployment gates](docs/COMPOSIO_GOVERNED_MCP.md) and [adversarial tests](tests/test_composio_guard.py). This is a working local adapter, **not** a Composio OAuth connection, production MCP service, independently signed credential or authorized NCA fleet. All external writes remain unavailable, and any production integration requires real cryptographic permits and explicit Owner-controlled provider credentials.
+
+## Operations Guard Pack v0.1 — Render × NCA × IMPERIAL EYE (10 November 2026)
+
+Three **offline, read-only** plugins have been added for the first operational blockers: [Render Resource Guard](src/imperial_plugins/render_resource_guard.py) (detects repeated memory-limit kills), [NCA Mission Truth Gate](src/imperial_plugins/mission_truth_gate.py) (rejects false production-readiness claims and expired approval), and [Camera Rights Preflight](src/imperial_plugins/camera_rights_preflight.py) (denies unsafe source plans without opening any stream). They include declarative manifests, a bounded JSON [CLI](tools/ops_guard.py), and synthetic [tests](tests/test_operational_guards.py).
+
+[Full operator guide](docs/OPERATIONS_GUARD_PACK_20261110.md). Local tests run with `PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_operational_guards.py' -v`. **These are not deployed ChatGPT connectors, provider credentials, authenticated permissions, independent QA, or autonomous service repairs.** They never grant production execution or spend money.
