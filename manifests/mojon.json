@@ -1,0 +1,8 @@
+{
+  "id": "imperial.mojon",
+  "version": "0.1.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Local fail-closed MCP adapter for pre-reviewed Enterprise Skills and simulated discounts; no external execution or pricing authority."
+}
