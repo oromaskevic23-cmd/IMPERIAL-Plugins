@@ -2,7 +2,9 @@
 
 **Enterprise-oriented plugin foundation for IMPERIAL Core** · Experimental / not production-deployed.
 
-<img src="https://raw.githubusercontent.com/oromaskevic23-cmd/oromaskevic23-cmd/main/assets/alexander-romaskevich-portrait-20261110.jpg" alt="Alexander Nikolaevich Romaskevich, Founder, Owner and CEO of IMPERIAL Core" width="160" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/oromaskevic23-cmd/oromaskevic23-cmd/main/assets/alexander-romaskevich-portrait-20261110.jpg" alt="Alexander Nikolaevich Romaskevich, Founder, Owner and CEO of IMPERIAL Core" width="160" />
+</p>
 
 **Architect and original project owner:** Alexander Nikolaevich Romaskevich (RomaskevicH).  
 **Core principle:** Architecture → Implementation → Evidence.
