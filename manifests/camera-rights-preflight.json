@@ -1,0 +1,8 @@
+{
+  "id": "imperial.camera-rights-preflight",
+  "version": "0.1.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Synthetic source rights planning gate; refuses unsafe metadata and person tracking without connecting to video sources."
+}
