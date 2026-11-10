@@ -1,0 +1,8 @@
+{
+  "id": "imperial.render-resource-guard",
+  "version": "0.1.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Offline read-only Render OOM incident triage over pre-supplied provider events; never restarts, scales or certifies production health."
+}
