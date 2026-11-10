@@ -1,0 +1,9 @@
+{
+  "id": "imperial.fusion-500",
+  "version": "0.1.0",
+  "capabilities": [
+    "read:public",
+    "simulate:task"
+  ],
+  "description": "Offline Figma + Lovable + Netlify + Context7 fusion, 500 declarative NCA profiles; no execution, spend, or provider connection"
+}
