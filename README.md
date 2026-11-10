@@ -157,3 +157,16 @@ worker require separate evidence and approval.
 A functional, **locally tested** [Composio transport guard](src/imperial_plugins/composio_guard.py) now enforces exact approved tool/toolkit scope, separate trusted-host Passport and Owner-permit verification, replay-resistant request IDs, bounded JSON, Owner Kill Switch checks and hash-chained audit receipts for injected **read-only** provider calls. It does not use or copy any third-party repository.
 
 See [implementation and deployment gates](docs/COMPOSIO_GOVERNED_MCP.md) and [adversarial tests](tests/test_composio_guard.py). This is a working local adapter, **not** a Composio OAuth connection, production MCP service, independently signed credential or authorized NCA fleet. All external writes remain unavailable, and any production integration requires real cryptographic permits and explicit Owner-controlled provider credentials.
+
+## MOJON v0.1 — Enterprise Skills × MCP (10 November 2026)
+
+[MOJON operator and security documentation](docs/MOJON_ENTERPRISE_MCP.md) · [MOJON source](src/imperial_plugins/mojon_mcp.py) · [MOJON Skill](plugins/mojon/SKILL.md) · [MCP launcher](tools/mojon_mcp.py) · [CI workflow](.github/workflows/mojon-mcp.yml).
+
+An original, **offline read-only MCP server** now bridges three existing public IMPERIAL-Skill descriptor projections with the existing Enterprise Skills validator. The five tools are `mojon.status`, `mojon.list_skills`, `mojon.validate_skill`, `mojon.plan_skill` and an optional *non-binding* `mojon.simulate_discount` for simulated commercial pricing arithmetic. Source identity and Owner approval are not verified from a remote registry.
+
+```sh
+PYTHONPATH=src python3 tools/mojon_mcp.py
+PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_mojon_mcp.py' -v
+```
+
+MOJON supports stateless MCP 2026-07-28 requests and previous 2025-11-25 initialization, with bounded stdin, strict schemas, and adversarial tests. **Not a hosted or installed ChatGPT Plugin; no HANTER runtime, external provider keys, real AI Passport, discount permission, payment or production NCA dispatch.** No execution authority is conferred by successful tool calls.
