@@ -1,0 +1,8 @@
+{
+  "id": "imperial.nca-truth-gate",
+  "version": "0.1.0",
+  "capabilities": [
+    "simulate:task"
+  ],
+  "description": "Offline snapshot-only NCA readiness assessment; never issues Owner approval, authorizes agents or declares runtime production ready."
+}
